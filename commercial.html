@@ -12,7 +12,18 @@ section{padding:92px 5%}.wrap{max-width:1180px;margin:auto}.section-tag{color:va
 .pagehero{padding:75px 5%;background:linear-gradient(120deg,var(--navy),#087d9f);color:white}.pagehero .wrap{max-width:1000px}.pagehero h1{font-size:52px;margin:12px 0}.content{max-width:1000px;margin:auto}.content h2{font-size:34px}.content p{line-height:1.75;color:#526678}.featuregrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:30px}.feature{padding:0;border:1px solid #e0eaf0;border-radius:14px;background:#fbfdfe;overflow:hidden}.feature img{width:100%;height:190px;object-fit:cover;display:block}.feature .featurebody{padding:24px}.feature h3{margin-top:0}
 @media(max-width:900px){.top{display:none}.nav{height:76px}.brand img{width:180px}.links{display:none}.mobile{display:block;font-size:27px;color:var(--navy)}.hero{min-height:auto;padding:65px 0 90px}.hero-inner{grid-template-columns:1fr}.hero h1{font-size:45px}.hero-card{display:none}.trust{grid-template-columns:1fr 1fr;gap:22px}.trust div{border:0}.cards,.reviewgrid,.commercial .panel{grid-template-columns:1fr}.split{grid-template-columns:1fr}.section-title{font-size:36px}.footgrid{grid-template-columns:1fr 1fr}.ctabox{display:block}.ctabox .buttons{margin-top:25px}.pagehero h1{font-size:40px}}
 @media(max-width:520px){.hero h1{font-size:40px}.trust{margin-top:-30px;padding:20px 10px}.cards{gap:14px}section{padding:68px 5%}.footgrid{grid-template-columns:1fr}.featuregrid{grid-template-columns:1fr}}
-</style></head><body>
+</style>
+<style id="mobile-menu-fix">
+@media(max-width:900px){
+  .mobile{cursor:pointer;user-select:none;position:relative;z-index:1001}
+  .links.mobile-open{display:flex!important;position:fixed;top:76px;left:0;right:0;bottom:0;background:#fff;z-index:1000;flex-direction:column;align-items:stretch;gap:0;padding:18px 5% 32px;overflow-y:auto;box-shadow:0 12px 30px #001b3426}
+  .links.mobile-open>a,.links.mobile-open>.drop>a{display:block;padding:14px 4px;border-bottom:1px solid #e4edf3}
+  .links.mobile-open .dropmenu{display:block;position:static;box-shadow:none;padding:0 0 4px 16px;min-width:0;border-radius:0}
+  .links.mobile-open .dropmenu a{padding:11px 4px;color:#526678}
+  .links.mobile-open .quote{margin-top:14px;text-align:center;border-bottom:0}
+}
+</style>
+</head><body>
 <div class="top"><span>Professional Cleaning & Property Services • Warsaw, Indiana</span><span>(574) 377-8097 &nbsp; | &nbsp; 100% Satisfaction Guarantee</span></div>
 <nav class="nav">
 <a class="brand" href="index.html"><img src="22dd327620ddeda2.png" alt="Lake City Shine Cleaning Solutions"></a>
@@ -40,4 +51,26 @@ section{padding:92px 5%}.wrap{max-width:1180px;margin:auto}.section-tag{color:va
 <div><h4>Property Services</h4><a href="commercial.html">Commercial Cleaning</a><a href="pressure-washing.html">Pressure Washing</a><a href="contact.html">Request a Quote</a></div>
 <div><h4>Lake City Shine</h4><a href="about.html">About Us</a><a href="tel:+15743778097">(574) 377-8097</a><a href="contact.html">Contact</a><a href="#">Warsaw, Indiana</a></div></div>
 <div class="copyright">© 2026 Lake City Shine Cleaning Solutions LLC. All rights reserved.</div></footer>
+
+<script id="mobile-menu-script">
+(function(){
+  var button=document.querySelector('.mobile');
+  var links=document.querySelector('.links');
+  if(!button||!links)return;
+  button.setAttribute('role','button');
+  button.setAttribute('tabindex','0');
+  button.setAttribute('aria-label','Open navigation menu');
+  button.setAttribute('aria-expanded','false');
+  function toggle(){
+    var open=links.classList.toggle('mobile-open');
+    button.textContent=open?'✕':'☰';
+    button.setAttribute('aria-expanded',open?'true':'false');
+    button.setAttribute('aria-label',open?'Close navigation menu':'Open navigation menu');
+    document.body.style.overflow=open?'hidden':'';
+  }
+  button.addEventListener('click',toggle);
+  button.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+  links.addEventListener('click',function(e){if(e.target.closest('a')&&links.classList.contains('mobile-open'))toggle();});
+})();
+</script>
 </body></html>
