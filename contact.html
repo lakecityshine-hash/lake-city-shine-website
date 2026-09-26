@@ -29,42 +29,55 @@ section{padding:92px 5%}.wrap{max-width:1180px;margin:auto}.section-tag{color:va
 </div><div class="mobile">☰</div>
 </nav>
 <header class="pagehero"><div class="wrap"><div class="eyebrow">REQUEST A FREE QUOTE</div><h1>Tell us about your property.</h1><p style="font-size:19px;line-height:1.65;max-width:720px;color:#d9e9f2">Call Lake City Shine at (574) 377-8097 or use this page as the starting point for your custom cleaning quote.</p><div class="buttons"><a class="btn primary" href="contact.html">Request a Free Quote</a><a class="btn secondary" href="tel:+15743778097">Call Now</a></div></div></header>
-<section style="padding:150px 0 80px">
-<div class="container" style="max-width:820px">
-  <div class="section-tag">CONTACT</div>
-  <h1>Contact Lake City Shine</h1>
+<section style="padding:90px 5% 80px;background:#f4f8fb">
+<div style="max-width:1000px;margin:auto">
+  <div class="section-tag">REQUEST A FREE QUOTE</div>
+  <h2 class="section-title" style="margin-bottom:10px">Tell us about your cleaning project.</h2>
+  <p class="lead" style="margin-top:0">Fill out the form below and Lake City Shine will follow up about your property, cleaning needs and scheduling.</p>
 
-  <div style="margin:28px 0 40px;line-height:1.9">
-    <p><strong>Cole Shepperd, Owner</strong><br>
-    Phone: <a href="tel:+15743778097">(574) 377-8097</a><br>
-    Email: <a href="mailto:lakecityshine@gmail.com">lakecityshine@gmail.com</a></p>
+  <div style="margin:34px 0;background:white;border:1px solid #e0eaf0;border-radius:18px;padding:28px;box-shadow:0 10px 30px #082a4410">
+    <form id="quote-form" action="https://formsubmit.co/lakecityshine@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="New Lake City Shine Quote Request">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_url" value="https://lakecityshine.com/contact.html">
+      <input type="text" name="_honey" style="display:none">
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px">
+        <div><label for="name"><strong>Name *</strong></label><input id="name" name="Name" type="text" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="phone"><strong>Phone *</strong></label><input id="phone" name="Phone" type="tel" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="email"><strong>Email *</strong></label><input id="email" name="email" type="email" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="address"><strong>Service Address / City *</strong></label><input id="address" name="Service Address / City" type="text" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="service"><strong>Service Type *</strong></label><select id="service" name="Service Type" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;background:white"><option value="">Select a service</option><option>One-Time Residential Cleaning</option><option>Recurring Residential Cleaning</option><option>Deep Residential Cleaning</option><option>Commercial Cleaning</option><option>Move-In / Move-Out Cleaning</option><option>Apartment / Rental Turnover</option><option>Post-Construction Cleaning</option><option>Pressure Washing</option><option>Window Cleaning</option></select></div>
+        <div><label for="property"><strong>Property Type *</strong></label><select id="property" name="Property Type" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;background:white"><option value="">Select one</option><option>Residential</option><option>Commercial</option><option>Apartment / Rental</option><option>Construction / Renovation</option><option>Other</option></select></div>
+        <div><label for="beds"><strong>Bedrooms</strong></label><input id="beds" name="Bedrooms" type="number" min="0" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="baths"><strong>Bathrooms</strong></label><input id="baths" name="Bathrooms" type="number" min="0" step="0.5" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="sqft"><strong>Approx. Square Footage</strong></label><input id="sqft" name="Approx. Square Footage" type="number" min="0" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="date"><strong>Preferred Service Date</strong></label><input id="date" name="Preferred Service Date" type="date" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px"></div>
+        <div><label for="condition"><strong>Property Condition</strong></label><select id="condition" name="Property Condition" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;background:white"><option value="">Select one</option><option>Light / Well Maintained</option><option>Average</option><option>Needs Extra Attention</option><option>Heavy-Duty Cleaning Needed</option><option>Not Sure</option></select></div>
+        <div><label for="occupancy"><strong>Occupancy</strong></label><select id="occupancy" name="Occupancy" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;background:white"><option value="">Select one</option><option>Occupied</option><option>Vacant</option><option>Will Be Vacant By Service Date</option><option>Not Applicable</option></select></div>
+        <div><label for="frequency"><strong>Recurring Frequency</strong></label><select id="frequency" name="Recurring Frequency" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;background:white"><option value="">Not recurring / Select frequency</option><option>Weekly</option><option>Every 2 Weeks</option><option>Every 4 Weeks / Monthly</option><option>As Needed</option><option>Not Sure Yet</option></select></div>
+      </div>
+
+      <div style="margin-top:26px"><strong>Add-On Services</strong><p style="color:#627284;margin:6px 0 13px;font-size:14px">Select any that apply.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+        <label><input type="checkbox" name="Add-On: Appliance Interiors" value="Yes"> Appliance Interiors</label>
+        <label><input type="checkbox" name="Add-On: Cabinets & Drawers" value="Yes"> Cabinets & Drawers</label>
+        <label><input type="checkbox" name="Add-On: Window Cleaning" value="Yes"> Window Cleaning</label>
+        <label><input type="checkbox" name="Add-On: Full Wall Washing" value="Yes"> Full Wall Washing</label>
+        <label><input type="checkbox" name="Add-On: Carpet Shampooing" value="Yes"> Carpet Shampooing</label>
+        <label><input type="checkbox" name="Add-On: Upholstery Cleaning" value="Yes"> Upholstery Cleaning</label>
+        <label><input type="checkbox" name="Add-On: Pressure Washing" value="Yes"> Pressure Washing</label>
+        <label><input type="checkbox" name="Add-On: Ozone Odor Treatment" value="Yes"> Ozone Odor Treatment</label>
+        <label><input type="checkbox" name="Add-On: Junk Removal" value="Yes"> Junk Removal</label>
+        <label><input type="checkbox" name="Add-On: Other" value="Yes"> Other</label>
+      </div></div>
+
+      <div style="margin-top:24px"><label for="details"><strong>Job Details *</strong></label><textarea id="details" name="Job Details" rows="7" required placeholder="Tell us what you need cleaned, any problem areas, access details, or anything else that would help us prepare your quote." style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;resize:vertical"></textarea></div>
+      <button type="submit" class="btn primary" style="border:0;cursor:pointer;margin-top:22px;font-size:16px">Request My Free Quote</button>
+      <p style="color:#627284;font-size:13px;line-height:1.5;margin:14px 0 0">Submitting this form requests a quote and does not confirm an appointment.</p>
+    </form>
   </div>
 
-  <form id="contact-form" action="#" method="POST">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px">
-      <div>
-        <label for="contact-name"><strong>Name *</strong></label>
-        <input id="contact-name" name="name" type="text" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;box-sizing:border-box">
-      </div>
-      <div>
-        <label for="contact-phone"><strong>Phone</strong></label>
-        <input id="contact-phone" name="phone" type="tel" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;box-sizing:border-box">
-      </div>
-      <div>
-        <label for="contact-email"><strong>Email *</strong></label>
-        <input id="contact-email" name="email" type="email" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;box-sizing:border-box">
-      </div>
-      <div>
-        <label for="contact-subject"><strong>Subject</strong></label>
-        <input id="contact-subject" name="subject" type="text" style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;box-sizing:border-box">
-      </div>
-    </div>
-    <div style="margin-top:18px">
-      <label for="contact-message"><strong>Message *</strong></label>
-      <textarea id="contact-message" name="message" rows="7" required style="width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;box-sizing:border-box;resize:vertical"></textarea>
-    </div>
-    <button type="submit" class="btn primary" style="margin-top:20px">Send Message</button>
-  </form>
+  <div style="line-height:1.8"><strong>Prefer to call?</strong> <a href="tel:+15743778097" style="color:#087eb7;font-weight:800">(574) 377-8097</a> &nbsp; • &nbsp; <a href="mailto:lakecityshine@gmail.com" style="color:#087eb7;font-weight:800">lakecityshine@gmail.com</a></div>
 </div>
 </section>
 <footer class="footer"><div class="footgrid"><div><img src="22dd327620ddeda2.png" alt="Lake City Shine"><p style="color:#bdd0de;line-height:1.6">Professional cleaning and property services for homes, businesses, apartments and construction projects throughout Northern Indiana.</p></div>
