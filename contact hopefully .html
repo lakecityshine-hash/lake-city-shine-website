@@ -1,0 +1,260 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Request a Free Quote | Lake City Shine</title><style>
+:root{--navy:#062b52;--blue:#087eb7;--teal:#12a4ad;--green:#69b72d;--lime:#8ccc2d;--ink:#10263b;--muted:#627284;--bg:#f4f8fb;--white:#fff;--gold:#f4bd20}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:white}
+a{text-decoration:none;color:inherit}.top{background:var(--navy);color:white;padding:9px 5%;font-size:13px;display:flex;justify-content:space-between;gap:20px}.nav{height:92px;padding:0 5%;display:flex;align-items:center;justify-content:space-between;background:#fff;position:sticky;top:0;z-index:20;box-shadow:0 5px 24px #001b3414}.brand img{width:235px;max-height:80px;object-fit:contain}.links{display:flex;align-items:center;gap:27px;font-weight:700;font-size:14px}.links a:hover{color:var(--blue)}.drop{position:relative}.dropmenu{display:none;position:absolute;top:20px;left:-20px;background:white;min-width:240px;padding:14px;border-radius:12px;box-shadow:0 16px 40px #001b3430}.drop:hover .dropmenu{display:block}.dropmenu a{display:block;padding:11px;border-radius:8px}.dropmenu a:hover{background:#eff7fb}.quote{background:linear-gradient(135deg,var(--green),#4fa91e);color:white!important;padding:14px 20px;border-radius:8px;box-shadow:0 8px 20px #62b52e30}
+.hero{min-height:610px;position:relative;overflow:hidden;background:linear-gradient(105deg,#052b53 0%,#074a77 53%,#0794ae 100%);color:white;display:flex;align-items:center}
+.hero:after{content:"";position:absolute;width:720px;height:720px;border:100px solid #ffffff0c;border-radius:50%;right:-260px;top:-200px}.hero-inner{width:min(1180px,90%);margin:auto;position:relative;z-index:2;display:grid;grid-template-columns:1.15fr .85fr;gap:55px;align-items:center}.eyebrow{font-weight:800;letter-spacing:2.5px;color:#a7df75;font-size:13px}.hero h1{font-size:64px;line-height:1.02;margin:16px 0 20px;max-width:720px}.hero p{font-size:19px;line-height:1.65;max-width:650px;color:#e2eff7}.buttons{display:flex;gap:13px;flex-wrap:wrap;margin-top:28px}.btn{padding:16px 23px;border-radius:8px;font-weight:800;display:inline-block}.primary{background:var(--green);color:white}.secondary{border:1px solid #ffffff70;color:white}.hero-card{background:white;color:var(--ink);border-radius:22px;padding:32px;box-shadow:0 28px 70px #00152f55}.hero-card img{width:100%;height:180px;object-fit:contain}.hero-card h3{font-size:23px;margin:14px 0 7px}.check{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px;color:#465a6b}.check span:before{content:"✓";color:var(--green);font-weight:900;margin-right:7px}
+.trust{width:min(1080px,90%);margin:-38px auto 0;position:relative;z-index:5;background:white;border-radius:15px;box-shadow:0 14px 40px #001b3420;display:grid;grid-template-columns:repeat(4,1fr);padding:25px}.trust div{text-align:center;border-right:1px solid #e5edf2;font-weight:800}.trust div:last-child{border:0}.trust small{display:block;color:var(--muted);font-weight:500;margin-top:6px}
+section{padding:92px 5%}.wrap{max-width:1180px;margin:auto}.section-tag{color:var(--blue);font-size:13px;letter-spacing:2px;font-weight:900}.section-title{font-size:44px;line-height:1.1;margin:12px 0 16px}.lead{color:var(--muted);font-size:18px;line-height:1.7;max-width:760px}.services{background:var(--bg)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:38px}.card{background:white;border-radius:16px;overflow:hidden;box-shadow:0 8px 25px #082a4410;border:1px solid #e7eef3;transition:.25s}.card:hover{transform:translateY(-5px);box-shadow:0 18px 35px #082a4420}.photo{height:160px;background:linear-gradient(135deg,#0b709c,#16a6ad);position:relative;overflow:hidden}.photo:before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;border:40px solid #ffffff14;right:-70px;top:-80px}.photo .icon{font-size:58px;position:absolute;left:25px;bottom:18px}.cardbody{padding:25px}.card h3{margin:0 0 10px;font-size:21px}.card p{color:var(--muted);line-height:1.6;font-size:15px}.learn{color:var(--blue);font-weight:800;font-size:14px}.split{display:grid;grid-template-columns:1fr 1fr;gap:65px;align-items:center}.visual{min-height:430px;border-radius:22px;background:linear-gradient(145deg,#edf7fa,#d8eff3);padding:35px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.visual img{width:95%;filter:drop-shadow(0 20px 20px #0a3a5b25)}.bullet{margin:22px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px}.bullet div{font-weight:700}.bullet div:before{content:"✓";display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#eaf7df;color:var(--green);margin-right:9px}
+.commercial{background:var(--navy);color:white}.commercial .lead{color:#c7d8e5}.commercial .panel{margin-top:35px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.commercial .panel div{background:#ffffff0c;border:1px solid #ffffff1c;border-radius:14px;padding:24px}.commercial h3{margin-top:0}.commercial p{color:#bed0dd;line-height:1.6}
+.reviews{background:#f7fafc}.reviewgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:35px}.review{background:white;border-radius:16px;padding:27px;box-shadow:0 10px 25px #0a2b4410}.stars{color:#f2b51d;letter-spacing:3px;font-size:19px}.review p{line-height:1.7;color:#536474}.cta{padding:0 5% 90px}.ctabox{max-width:1180px;margin:auto;border-radius:22px;padding:55px;background:linear-gradient(120deg,#0a789f,#0f9da8 55%,#67b52d);color:white;display:flex;justify-content:space-between;align-items:center;gap:30px}.ctabox h2{font-size:38px;margin:0 0 10px}.footer{background:#041f3a;color:white;padding:58px 5% 25px}.footgrid{max-width:1180px;margin:auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px}.footgrid img{width:230px;background:white;border-radius:10px}.footgrid h4{margin-top:0}.footgrid a{display:block;color:#bdd0de;margin:10px 0;font-size:14px}.copyright{max-width:1180px;margin:40px auto 0;border-top:1px solid #ffffff18;padding-top:20px;color:#8fa9bc;font-size:13px}
+.mobile{display:none}
+.pagehero{padding:75px 5%;background:linear-gradient(120deg,var(--navy),#087d9f);color:white}.pagehero .wrap{max-width:1000px}.pagehero h1{font-size:52px;margin:12px 0}.content{max-width:1000px;margin:auto}.content h2{font-size:34px}.content p{line-height:1.75;color:#526678}.featuregrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:30px}.feature{padding:24px;border:1px solid #e0eaf0;border-radius:14px;background:#fbfdfe}.feature h3{margin-top:0}
+@media(max-width:900px){.top{display:none}.nav{height:76px}.brand img{width:180px}.links{display:none}.mobile{display:block;font-size:27px;color:var(--navy)}.hero{min-height:auto;padding:65px 0 90px}.hero-inner{grid-template-columns:1fr}.hero h1{font-size:45px}.hero-card{display:none}.trust{grid-template-columns:1fr 1fr;gap:22px}.trust div{border:0}.cards,.reviewgrid,.commercial .panel{grid-template-columns:1fr}.split{grid-template-columns:1fr}.section-title{font-size:36px}.footgrid{grid-template-columns:1fr 1fr}.ctabox{display:block}.ctabox .buttons{margin-top:25px}.pagehero h1{font-size:40px}}
+@media(max-width:520px){.hero h1{font-size:40px}.trust{margin-top:-30px;padding:20px 10px}.cards{gap:14px}section{padding:68px 5%}.footgrid{grid-template-columns:1fr}.featuregrid{grid-template-columns:1fr}}
+
+.quick-contact{background:#f3f8fb;padding:8px 5%;display:flex;justify-content:flex-end;gap:10px;border-bottom:1px solid #dfeaf0}.quick-contact a{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-weight:800;font-size:14px}.quick-call{background:#087eb7;color:#fff}.quick-text{background:#69b72d;color:#fff}@media(max-width:900px){.quick-contact{display:grid;grid-template-columns:1fr 1fr;padding:8px 4%;position:sticky;top:0;z-index:30}.quick-contact a{padding:11px 8px}.nav{top:55px}}
+
+/* Mobile navigation */
+@media(max-width:900px){
+  .mobile{cursor:pointer;user-select:none;padding:10px;position:relative;z-index:42}
+  .links.mobile-open{display:flex;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;gap:0;padding:12px 5% 20px;box-shadow:0 18px 30px #001b3428;z-index:40}
+  .links.mobile-open>a,.links.mobile-open>.drop>a{display:block;padding:14px 10px;border-bottom:1px solid #e8eef2}
+  .links.mobile-open .drop{width:100%}
+  .links.mobile-open .dropmenu{display:block;position:static;box-shadow:none;padding:0 0 4px 14px;min-width:0;border-radius:0}
+  .links.mobile-open .dropmenu a{padding:11px 10px;color:#526678}
+}
+
+
+/* Quote form */
+.container{width:min(820px,90%);margin:auto}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.form-grid .full{grid-column:1/-1}#contact-form input,#contact-form select,#contact-form textarea{width:100%;padding:14px;margin-top:7px;border:1px solid #ccd9df;border-radius:8px;box-sizing:border-box;background:#fff;color:var(--ink);font:inherit}#contact-form input:focus,#contact-form select:focus,#contact-form textarea:focus{outline:2px solid #087eb733;border-color:var(--blue)}.conditional[hidden]{display:none!important;}.conditional{display:block;margin-top:28px;padding:24px;border:1px solid #dfe9ef;border-radius:14px;background:#f9fcfd}.conditional.active{display:block}.conditional h3{margin:0 0 18px;color:var(--navy);font-size:22px}.subfield{display:none}.subfield.active{display:block}fieldset{border:0;padding:0;margin:22px 0 0}legend{font-weight:800;margin-bottom:12px}.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}.checks label{display:flex;gap:8px;align-items:flex-start;padding:9px 0}.checks input{width:auto!important;margin:2px 0 0!important}.final-notes{margin-top:26px}.form-submit{border:0;cursor:pointer;margin-top:20px;font-size:16px}.form-note{color:var(--muted);font-size:14px;line-height:1.5}@media(max-width:650px){.form-grid,.checks{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.conditional{padding:18px}}
+</style><style id="quote-form-rebuild-styles">
+.quote-form-rebuild label{display:block;margin:0 0 14px}
+.quote-form-rebuild input,.quote-form-rebuild select,.quote-form-rebuild textarea{box-sizing:border-box;width:100%;margin-top:6px}
+.quote-form-rebuild input[type=checkbox]{width:auto;margin-right:6px}
+.quote-form-rebuild .service-panel{margin:22px 0;padding:18px;border:1px solid rgba(0,0,0,.15);border-radius:12px}
+.quote-form-rebuild .service-panel h3{margin-top:0}
+</style></head><body>
+<div class="top"><span>Professional Cleaning & Property Services • Warsaw, Indiana</span><span>(574) 377-8097 &nbsp; | &nbsp; 100% Satisfaction Guarantee</span></div>
+<div class="quick-contact"><a class="quick-call" href="tel:+15743778097">Call (574) 377-8097</a><a class="quick-text" href="sms:+15743778097">Text Us</a></div>
+<nav class="nav">
+<a class="brand" href="index.html"><img src="22dd327620ddeda2.png" alt="Lake City Shine Cleaning Solutions"></a>
+<div class="links">
+<a href="index.html">Home</a>
+<div class="drop"><a href="residential.html">Residential ▾</a><div class="dropmenu">
+<a href="move-in-out.html">Move-In & Move-Out</a><a href="deep-cleaning.html">Deep Cleaning</a>
+</div></div>
+<div class="drop"><a href="commercial.html">Commercial ▾</a><div class="dropmenu">
+<a href="commercial.html">Commercial Cleaning</a><a href="turnovers.html">Apartment Turnovers</a><a href="post-construction.html">Post-Construction</a>
+</div></div>
+<div class="drop"><div class="dropmenu"><a href="pressure-washing.html">Pressure Washing</a></div></div>
+<a href="faq.html">FAQ</a><a href="about.html">About</a><a href="contact.html">Contact</a><a class="quote" href="contact.html">Get a Free Quote</a>
+</div><div class="mobile">☰</div>
+</nav>
+<header class="pagehero"><div class="wrap"><div class="eyebrow">REQUEST A FREE QUOTE</div><h1>Tell us about your property.</h1><p style="font-size:19px;line-height:1.65;max-width:720px;color:#d9e9f2">Call Lake City Shine at (574) 377-8097 or use this page as the starting point for your custom cleaning quote.</p><div class="buttons"><a class="btn primary" href="contact.html">Request a Free Quote</a><a class="btn secondary" href="tel:+15743778097">Call Now</a></div></div></header>
+<section style="padding:150px 0 80px">
+<div class="container" style="max-width:820px">
+  <div class="section-tag">CONTACT</div>
+  <h1>Contact Lake City Shine</h1>
+
+  <div style="margin:28px 0 40px;line-height:1.9">
+    <p><strong>Cole Shepperd, Owner</strong><br>
+    Phone: <a href="tel:+15743778097">(574) 377-8097</a><br>
+    Email: <a href="mailto:lakecityshine@gmail.com">lakecityshine@gmail.com</a></p>
+  </div>
+
+  <form id="contact-form" action="https://formsubmit.co/lakecityshine@gmail.com" method="POST">
+<div class="quote-form-rebuild">
+<label>Name<input name="name" required></label>
+<label>Phone<input name="phone" type="tel" required></label>
+<label>Email<input name="email" type="email" required></label>
+<label>Street Address<input name="service_street" required></label>
+<label>City<input name="service_city" required></label>
+<label>ZIP<input name="service_zip" required></label>
+<label>Preferred Service Date<input name="preferred_date" type="date"></label>
+
+<label>Service Needed
+<select id="service-needed" name="service" required onchange="showServiceQuestions(this.value)">
+<option value="">Choose a service</option>
+<option value="residential">Residential / Deep Cleaning</option>
+<option value="move">Move-In / Move-Out Cleaning</option>
+<option value="commercial">Commercial Cleaning</option>
+<option value="pressure">Pressure Washing</option>
+<option value="postconstruction">Post-Construction Cleaning</option>
+<option value="windows">Window Cleaning</option>
+<option value="turnovers">Apartment / Unit Turnovers</option>
+<option value="other">Other Service</option>
+</select></label>
+
+<label>Preferred Contact Method<select name="contact_method"><option>Call</option><option>Text</option><option>Email</option></select></label>
+<label>How Soon Do You Need Service?<select name="service_timing"><option>ASAP</option><option>Within a week</option><option>Within 2 weeks</option><option>Within a month</option><option>Flexible</option></select></label>
+<label>Best Time to Contact You<select name="contact_time"><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Anytime</option></select></label>
+
+<section id="panel-residential" class="service-panel" style="display:none">
+<h3>Residential / Deep Cleaning Details</h3>
+<label>Bedrooms<input type="number" min="0" name="res_bedrooms"></label>
+<label>Bathrooms<input type="number" min="0" step=".5" name="res_bathrooms"></label>
+<label>Approximate Square Footage<input name="res_sqft" placeholder="Enter size or Not sure"></label>
+<label>Occupied or Vacant?<select name="res_occupancy"><option>Occupied</option><option>Vacant</option></select></label>
+<label>Pets in Home?<select name="res_pets"><option>No</option><option>Yes</option></select></label>
+<label>Pet Type / How Many<input name="res_pet_details"></label>
+<label>Smoking Inside?<select name="res_smoking"><option>No</option><option>Yes - Light</option><option>Yes - Moderate</option><option>Yes - Heavy</option><option>Unsure</option></select></label>
+<label>General Condition<select name="res_condition"><option>Light</option><option>Average</option><option>Heavy</option><option>Very heavy</option></select></label>
+<label>Carpet Present?<select name="res_carpet"><option>No</option><option>Yes</option><option>Not sure</option></select></label>
+</section>
+
+<section id="panel-move" class="service-panel" style="display:none">
+<h3>Move-In / Move-Out Details</h3>
+<label>Cleaning Type<select name="move_type" onchange="toggleMoveOut(this.value)"><option value="move-in">Move-In Cleaning</option><option value="move-out">Move-Out Cleaning</option></select></label>
+<label>Relationship to Property<select name="move_relationship"><option>Renter/Tenant</option><option>Owner</option><option>Landlord/Property Manager</option><option>Other</option></select></label>
+<label id="move-duration-wrap" style="display:none">How Long Was the Property Occupied?<select name="move_duration"><option>Less than 1 year</option><option>1–2 years</option><option>3–5 years</option><option>5–10 years</option><option>10+ years</option><option>Not sure / Not applicable</option></select></label>
+<label>Bedrooms<input type="number" min="0" name="move_bedrooms"></label>
+<label>Bathrooms<input type="number" min="0" step=".5" name="move_bathrooms"></label>
+<label>Approximate Square Footage<input name="move_sqft" placeholder="Enter size or Not sure"></label>
+<label>Vacant or Still Occupied?<select name="move_occupancy"><option>Vacant</option><option>Still occupied</option></select></label>
+<label>Pets?<select name="move_pets"><option>No</option><option>Yes</option></select></label>
+<label>Smoking Inside?<select name="move_smoking"><option>No</option><option>Yes - Light</option><option>Yes - Moderate</option><option>Yes - Heavy</option><option>Unsure</option></select></label>
+<label>Carpet Present?<select name="move_carpet"><option>No</option><option>Yes</option><option>Not sure</option></select></label>
+<label>General Condition<select name="move_condition"><option>Light</option><option>Average</option><option>Heavy</option><option>Very heavy</option></select></label>
+</section>
+
+<section id="panel-commercial" class="service-panel" style="display:none">
+<h3>Commercial Cleaning Details</h3>
+<label>Business / Facility Type<select name="commercial_type"><option>Office</option><option>Retail/Storefront</option><option>Apartment Property</option><option>Medical/Clinic</option><option>Church</option><option>Salon/Barbershop</option><option>Warehouse/Manufacturing</option><option>Other</option></select></label>
+<label>Approximate Square Footage<input name="commercial_sqft" placeholder="Enter size or Not sure"></label>
+<label>Number of Restrooms<input type="number" min="0" name="commercial_restrooms"></label>
+<label>Number of Offices / Rooms<input type="number" min="0" name="commercial_rooms"></label>
+<label>Number of Break Rooms / Kitchens<input type="number" min="0" name="commercial_breakrooms"></label>
+<label>How Often Do You Need Cleaning?<select name="commercial_frequency"><option>One-time</option><option>Weekly</option><option>Biweekly</option><option>Monthly</option><option>Not sure</option></select></label>
+<p><strong>Additional Services You’re Interested In</strong></p>
+<label><input type="checkbox" name="commercial_addons" value="Carpet cleaning"> Carpet cleaning</label>
+<label><input type="checkbox" name="commercial_addons" value="Interior window cleaning"> Interior window cleaning</label>
+<label><input type="checkbox" name="commercial_addons" value="Exterior window cleaning"> Exterior window cleaning</label>
+<label><input type="checkbox" name="commercial_addons" value="Pressure washing"> Pressure washing</label>
+<label><input type="checkbox" name="commercial_addons" value="Wall/baseboard cleaning"> Wall/baseboard cleaning</label>
+<label><input type="checkbox" name="commercial_addons" value="Apartment/unit turnovers"> Apartment/unit turnovers</label>
+<label><input type="checkbox" name="commercial_addons" value="Post-construction cleaning"> Post-construction cleaning</label>
+</section>
+
+<section id="panel-pressure" class="service-panel" style="display:none">
+<h3>Pressure Washing Details</h3>
+<p><strong>What Would You Like Pressure Washed?</strong></p>
+<label><input type="checkbox" name="pressure_surface" value="House/building exterior"> House/building exterior</label>
+<label><input type="checkbox" name="pressure_surface" value="Sidewalk/walkway"> Sidewalk/walkway</label>
+<label><input type="checkbox" name="pressure_surface" value="Driveway"> Driveway</label>
+<label><input type="checkbox" name="pressure_surface" value="Patio/porch"> Patio/porch</label>
+<label><input type="checkbox" name="pressure_surface" value="Deck"> Deck</label>
+<label><input type="checkbox" name="pressure_surface" value="Dumpster"> Dumpster</label>
+<label><input type="checkbox" name="pressure_surface" value="Dumpster pad"> Dumpster pad</label>
+<label><input type="checkbox" name="pressure_surface" value="Trash cans"> Trash cans</label>
+<label>Approximate Area Size<input name="pressure_size" placeholder="Square footage or brief description"></label>
+<label>Outdoor Water Hookup Available?<select name="pressure_water"><option>Yes</option><option>No</option><option>Not sure</option></select></label>
+<p><strong>Staining / Buildup Present</strong></p>
+<label><input type="checkbox" name="pressure_staining" value="Dirt/mud"> Dirt/mud</label>
+<label><input type="checkbox" name="pressure_staining" value="Algae/green buildup"> Algae/green buildup</label>
+<label><input type="checkbox" name="pressure_staining" value="Mold/mildew"> Mold/mildew</label>
+<label><input type="checkbox" name="pressure_staining" value="Grease/oil"> Grease/oil</label>
+<label><input type="checkbox" name="pressure_staining" value="Rust staining"> Rust staining</label>
+<label><input type="checkbox" name="pressure_staining" value="Organic staining"> Organic staining</label>
+<label><input type="checkbox" name="pressure_staining" value="General weathering/discoloration"> General weathering/discoloration</label>
+<label><input type="checkbox" name="pressure_staining" value="Not sure"> Not sure</label>
+</section>
+
+<section id="panel-postconstruction" class="service-panel" style="display:none">
+<h3>Post-Construction Details</h3>
+<label>Project / Property Type<input name="post_type"></label>
+<label>Approximate Square Footage<input name="post_sqft" placeholder="Enter size or Not sure"></label>
+<label>Current Stage / Expected Completion Date<input name="post_stage"></label>
+<label>Cleaning Needed<select name="post_clean_type"><option>Rough</option><option>Final</option><option>Full</option><option>Floors-only</option><option>Not sure</option></select></label>
+<label>Desired Service Date<input type="date" name="post_date"></label>
+</section>
+
+<section id="panel-windows" class="service-panel" style="display:none">
+<h3>Window Cleaning Details</h3>
+<label>Interior, Exterior, or Both?<select name="window_scope"><option>Interior</option><option>Exterior</option><option>Both</option><option>Not sure</option></select></label>
+<label>Approximate Number of Windows / Panes<input name="window_count" placeholder="Enter number or Not sure"></label>
+<label>Stories<select name="window_stories"><option>1</option><option>2</option><option>3+</option><option>Not sure</option></select></label>
+</section>
+
+<section id="panel-turnovers" class="service-panel" style="display:none">
+<h3>Apartment / Unit Turnover Details</h3>
+<label>Number of Units<input type="number" min="1" name="turnover_units"></label>
+<label>Bedrooms Per Unit<input name="turnover_bedrooms"></label>
+<label>Bathrooms Per Unit<input name="turnover_bathrooms"></label>
+<label>Approximate Square Footage Per Unit<input name="turnover_sqft" placeholder="Enter size or Not sure"></label>
+<label>Unit Status<select name="turnover_status"><option>Vacant</option><option>Still occupied</option><option>Mixed</option></select></label>
+<label>General Condition<select name="turnover_condition"><option>Light</option><option>Average</option><option>Heavy</option><option>Very heavy</option></select></label>
+</section>
+
+<section id="panel-other" class="service-panel" style="display:none">
+<h3>Other Service</h3>
+<label>Please Describe What You Need<textarea name="other_service_description" rows="4"></textarea></label>
+</section>
+
+<label>Anything Else We Should Know?<textarea name="message" rows="5"></textarea></label>
+<button type="submit">Request a Quote</button>
+</div>
+
+<script>
+function showServiceQuestions(value) {
+  var names = ["residential","move","commercial","pressure","postconstruction","windows","turnovers","other"];
+  for (var i=0; i<names.length; i++) {
+    var el = document.getElementById("panel-" + names[i]);
+    if (el) { el.style.display = (names[i] === value) ? "block" : "none"; }
+  }
+}
+function toggleMoveOut(value) {
+  var el = document.getElementById("move-duration-wrap");
+  if (el) { el.style.display = (value === "move-out") ? "block" : "none"; }
+}
+</script>
+</form>
+</div>
+</section>
+<footer class="footer"><div class="footgrid"><div><img src="22dd327620ddeda2.png" alt="Lake City Shine"><p style="color:#bdd0de;line-height:1.6">Professional cleaning and property services for homes, businesses, apartments and construction projects throughout Northern Indiana.</p></div>
+<div><h4>Cleaning Services</h4><a href="move-in-out.html">Move-In / Move-Out</a><a href="deep-cleaning.html">Deep Cleaning</a><a href="turnovers.html">Apartment Turnovers</a><a href="post-construction.html">Post-Construction</a></div>
+<div><h4>Property Services</h4><a href="commercial.html">Commercial Cleaning</a><a href="pressure-washing.html">Pressure Washing</a><a href="contact.html">Request a Quote</a></div>
+<div><h4>Lake City Shine</h4><a href="about.html">About Us</a><a href="faq.html">FAQ</a><a href="tel:+15743778097">(574) 377-8097</a><a href="contact.html">Contact</a><a href="#">Warsaw, Indiana</a></div></div>
+<div class="copyright">© 2026 Lake City Shine Cleaning Solutions LLC. All rights reserved.</div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var button=document.querySelector('.mobile');
+  var links=document.querySelector('.links');
+  if(!button||!links)return;
+  button.setAttribute('role','button');
+  button.setAttribute('aria-label','Open navigation menu');
+  button.setAttribute('aria-expanded','false');
+  button.addEventListener('click',function(){
+    var open=links.classList.toggle('mobile-open');
+    button.textContent=open?'✕':'☰';
+    button.setAttribute('aria-expanded',open?'true':'false');
+  });
+  links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){
+    if(window.innerWidth<=900){links.classList.remove('mobile-open');button.textContent='☰';button.setAttribute('aria-expanded','false');}
+  });});
+});
+</script>
+
+
+<script>
+function updateServiceSections(){
+  var service=document.getElementById('service-type');
+  var value=service?service.value:'';
+  document.querySelectorAll('.conditional').forEach(function(section){
+    var allowed=(section.getAttribute('data-service')||'').trim().split(/\s+/);
+    var show=allowed.includes(value); section.hidden=!show; section.classList.toggle('active',show);
+  });
+}
+document.addEventListener('DOMContentLoaded',function(){
+  var service=document.getElementById('service-type');
+  if(service){service.addEventListener('change',updateServiceSections);updateServiceSections();}
+  var smoking=document.getElementById('smoking'),smokeLevel=document.getElementById('smoking-level');
+  function updateSmoking(){if(smokeLevel)smokeLevel.classList.toggle('active',smoking&&smoking.value==='Yes');}
+  if(smoking){smoking.addEventListener('change',updateSmoking);updateSmoking();}
+  var move=document.getElementById('move-type'),occupancy=document.getElementById('occupancy-length');
+  function updateMove(){if(occupancy)occupancy.classList.toggle('active',move&&move.value==='Move-Out Cleaning');}
+  if(move){move.addEventListener('change',updateMove);updateMove();}
+});
+</script>
+</body></html>
