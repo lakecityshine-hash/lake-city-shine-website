@@ -1,23 +1,9 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Employee Portal | Lake City Shine</title><link rel="stylesheet" href="portal.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header>
-<main><div class="card"><h2 id="hello">Welcome</h2><div id="clockState"></div><button class="green" id="punch">Clock In</button></div>
-<div class="grid">
-<div class="card"><h2>Cleaning Checklists</h2><a class="btn" href="checklists.html">Open</a></div>
-<div class="card"><h2>Chemicals & SDS</h2><a class="btn" href="chemicals-sds.html">Open</a></div>
-<div class="card"><h2>Job Photos</h2><a class="btn" href="job-photos.html">Open</a></div>
-<div class="card"><h2>Report an Issue</h2><a class="btn" href="report-issue.html">Open</a></div>
-<div class="card"><h2>Cleaning Supply Request</h2><a class="btn" href="supply-request.html">Open</a></div>
-<div class="card"><h2>Company Policies</h2><a class="btn" href="policies.html">Open</a></div>
-<div class="card" id="adminCard" style="display:none"><h2>Owner / Admin</h2><a class="btn" href="admin.html">Open</a></div></div>
-<button id="logout">Sign Out</button></main><script src="supabase-portal.js"></script><script>
-let emp,openEntry;
-(async()=>{emp=await requirePortalUser();if(!emp)return;hello.textContent='Welcome, '+emp.first_name;if(emp.role==='admin')adminCard.style.display='';
-await refresh();})();
-async function refresh(){const {data}=await sb.from('time_entries').select('*').eq('employee_id',emp.id).is('clock_out',null).order('clock_in',{ascending:false}).limit(1);
-openEntry=data&&data[0]; clockState.textContent=openEntry?'Clocked in since '+new Date(openEntry.clock_in).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'You are currently clocked out.';
-punch.textContent=openEntry?'Clock Out':'Clock In';}
-punch.onclick=async()=>{punch.disabled=true;if(openEntry){await sb.from('time_entries').update({clock_out:new Date().toISOString()}).eq('id',openEntry.id)}
-else{await sb.from('time_entries').insert({employee_id:emp.id,clock_in:new Date().toISOString()})} await refresh();punch.disabled=false;};
-logout.onclick=async()=>{await sb.auth.signOut();location.href='login.html'};
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Employee Portal</title><link rel="stylesheet" href="portal.css"></head><body><div class="wrap"><div class="card"><h1 id="hello">Employee Portal</h1><div class="card" id="clockCard"><h2>Time Clock</h2><p id="clockStatus" class="muted">Checking status…</p><div class="grid"><button id="clockIn">Clock In</button><button id="clockOut">Clock Out</button></div></div><div class="grid" id="links"></div><button onclick="logout()" class="danger">Sign Out</button></div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js"></script><script>
+const pages={time_clock:["Time Clock","#clock"],checklists:["Checklists","checklists.html"],chemicals_sds:["Chemicals & SDS","chemicals-sds.html"],job_photos:["Job Photos","job-photos.html"],report_issue:["Report an Issue","report-issue.html"],supply_request:["Supply / Equipment Request","supply-request.html"],policies:["Policies","policies.html"]};
+(async()=>{const x=await me();hello.textContent="Hi, "+x.employee.first_name;const p=x.employee.permissions||{};for(const [k,[label,href]] of Object.entries(pages))if(p[k]!==false&&href!=="#clock")links.innerHTML+=`<a class="btn" href="${href}">${label}</a>`;if(x.employee.role==="admin")links.innerHTML+=`<a class="btn" href="admin.html">Owner / Admin</a>`;
+const {data:open}=await lcs.from("time_entries").select("id,clock_in").eq("employee_id",x.employee.id).is("clock_out",null).order("clock_in",{ascending:false}).limit(1).maybeSingle();
+clockStatus.textContent=open?"Clocked in since "+new Date(open.clock_in).toLocaleTimeString():"Currently clocked out";
+clockIn.disabled=!!open; clockOut.disabled=!open;
+clockIn.onclick=async()=>{const {error}=await lcs.from("time_entries").insert({employee_id:x.employee.id,clock_in:new Date().toISOString()});if(error)return alert(error.message);location.reload()};
+clockOut.onclick=async()=>{if(!open)return;const {error}=await lcs.from("time_entries").update({clock_out:new Date().toISOString()}).eq("id",open.id);if(error)return alert(error.message);location.reload()};})();
 </script></body></html>
