@@ -1,6 +1,6 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Employee Portal</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header><main><div class=card><h2 id=hello>Welcome</h2><p id=clockStatus></p><button id=clockBtn type=button>Loading…</button><p id=clockHint style="margin-top:10px;font-weight:700"></p><div id="shiftSummary" style="margin-top:12px;font-weight:700"></div></div>
 <div class=card><h2>My Hours</h2><div id=weekNav style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button type=button id=prevWeek>← Previous Week</button><button type=button id=currentWeek>Current Week</button><button type=button id=nextWeek>Next Week →</button></div><div id=weekTitle></div><div id=hoursList>Loading hours…</div><div id=weekTotal style="margin-top:12px;font-size:1.15rem;font-weight:800"></div><p style="margin-top:10px">Payroll week: Wednesday through Tuesday. You can review roughly the last month here.</p></div>
-<div class=card><h2>Employee Tools</h2><div id=links></div></div><button onclick="logout()">Sign Out</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod11"></script><script>let emp,openEntry;
+<div class=card><h2>My Schedule</h2><p>Your scheduled arrival time.</p><div id="myScheduleV12">Loading schedule…</div></div><div class=card><h2>Employee Tools</h2><div id=links></div></div><button onclick="logout()">Sign Out</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod14"></script><script>let emp,openEntry;
 (async()=>{
  const helloEl=document.getElementById("hello"), linksEl=document.getElementById("links"), statusEl=document.getElementById("clockStatus"), btnEl=document.getElementById("clockBtn");
  try{
@@ -70,4 +70,15 @@ function wireClockHold(){
  b.addEventListener("pointerleave",cancelClockHold);
 }
 wireClockHold();
-async function toggleClock(){document.getElementById("clockBtn").disabled=true;let error;if(openEntry){const ended=new Date(),worked=hoursBetween(openEntry.clock_in,ended);({error}=await lcs.from("time_entries").update({clock_out:ended.toISOString()}).eq("id",openEntry.id));if(!error)document.getElementById("shiftSummary").textContent="Shift complete: "+hoursText(worked)}else({error}=await lcs.from("time_entries").insert({employee_id:emp.id}));if(error)alert(error.message);await refreshClock();document.getElementById("clockBtn").disabled=false}</script></body></html>
+async function toggleClock(){document.getElementById("clockBtn").disabled=true;let error;if(openEntry){const ended=new Date(),worked=hoursBetween(openEntry.clock_in,ended);({error}=await lcs.from("time_entries").update({clock_out:ended.toISOString()}).eq("id",openEntry.id));if(!error)document.getElementById("shiftSummary").textContent="Shift complete: "+hoursText(worked)}else({error}=await lcs.from("time_entries").insert({employee_id:emp.id}));if(error)alert(error.message);await refreshClock();document.getElementById("clockBtn").disabled=false}
+async function loadMyScheduleV12(){
+ const box=document.getElementById("myScheduleV12");if(!box||!emp)return;
+ const now=new Date(),pad=n=>String(n).padStart(2,"0"),today=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+ const end=new Date(now);end.setDate(end.getDate()+14);const endDate=`${end.getFullYear()}-${pad(end.getMonth()+1)}-${pad(end.getDate())}`;
+ const {data,error}=await lcs.from("employee_schedule").select("schedule_date,arrival_time").eq("employee_id",emp.id).gte("schedule_date",today).lte("schedule_date",endDate).order("schedule_date");
+ if(error){box.textContent=error.message;return}
+ if(!data?.length){box.innerHTML="<b>No upcoming arrival times posted.</b>";return}
+ box.innerHTML=data.map(x=>{const d=new Date(x.schedule_date+"T12:00:00"),[h,m]=x.arrival_time.split(":").map(Number),t=new Date(2000,0,1,h,m).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});return `<div class=row><b>${d.toLocaleDateString([],{weekday:"long",month:"short",day:"numeric"})}</b><br>Arrival time: <b>${t}</b></div>`}).join("");
+}
+setTimeout(loadMyScheduleV12,0);
+</script></body></html>

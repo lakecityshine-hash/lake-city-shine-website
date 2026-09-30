@@ -19,7 +19,12 @@
 <label><input type="checkbox" data-p="policies"> Policies</label></div>
 <button type="button" id="saveEditV9">Save Changes</button><hr><h3>Reset PIN</h3>
 <div style="display:flex;gap:8px"><input id="pinV9" inputmode="numeric" maxlength="8" placeholder="4–8 digit PIN"><button type="button" id="resetPinV9">Reset PIN</button></div>
-<hr><button type="button" class="danger" id="removeV9">Remove Employee</button><p>Old time punches and records will be kept.</p><div id="editMsgV9"></div></div></div><details class="card" id="punchCalendarDetails">
+<hr><button type="button" class="danger" id="removeV9">Remove Employee</button><p>Old time punches and records will be kept.</p><div id="editMsgV9"></div></div></div><div class="card" id="scheduleAdminV12"><h2>Employee Schedule</h2><p>Set the time an employee should arrive at your house.</p>
+<label>Employee</label><select id="schedEmpV12"></select>
+<label>Date</label><input type="date" id="schedDateV12">
+<label>Arrival Time</label><input type="time" id="schedTimeV12">
+<button type="button" id="saveSchedV12" style="margin-top:10px">Save Arrival Time</button>
+<div id="schedMsgV12"></div><div id="schedListV12" style="margin-top:12px">Loading schedule…</div></div><details class="card" id="punchCalendarDetails">
 <summary style="cursor:pointer;font-size:1.35rem;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:12px">
 <span>Employee Punch Calendar</span><span>▼</span>
 </summary>
@@ -36,20 +41,41 @@
 <div class=card><h2>Completed Checklists</h2><div id=checklists>Loading…</div></div>
 <div class=card><h2>Job Photos</h2><div id=photos>Loading…</div></div>
 <div class=card><h2>Reported Problems</h2><div id=issues>Loading…</div></div>
-<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod11"></script><script>
-let session,elist=[];(async()=>{const x=await me(true);session=x.session;await refreshAll()})();
+<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod14"></script><script>
+let session,elist=[];
+(async()=>{
+ try{
+  const x=await me(true);session=x.session;
+  await refreshAll();
+ }catch(e){
+  console.error(e);
+  ["punches","checklists","photos","issues","supplies"].forEach(id=>{
+   const el=document.getElementById(id);
+   if(el && /Loading/.test(el.textContent)) el.textContent="Could not load. Refresh the page or sign in again.";
+  });
+ }
+})();
 function nameOf(id){const e=elist.find(e=>e.id===id);return e?fullName(e):"Employee"}
-async function refreshAll(){await loadEmployees();await Promise.all([loadPunches(),loadChecklists(),loadPhotos(),loadIssues(),loadSupplies()])}
-async function loadEmployees(){const x=await api({action:"list"},session.access_token);elist=x.employees||[];employees.innerHTML=elist.map(e=>`<div class=row><b>${esc(fullName(e))}</b> — ${esc(e.role)} — ${e.active?"Active":"Disabled"}<br><button onclick="toggleEmployee('${e.id}',${!e.active})">${e.active?"Disable":"Enable"}</button>${e.auth_user_id?` <button onclick="resetPin('${e.id}')">Reset PIN</button>`:" <span>Waiting for first PIN setup</span>"}</div>`).join("")}
+async function refreshAll(){
+ await Promise.allSettled([
+  loadEmployees(),
+  loadPunches(),
+  loadChecklists(),
+  loadPhotos(),
+  loadIssues(),
+  loadSupplies()
+ ]);
+}
+async function loadEmployees(){const x=await api({action:"list"},session.access_token);elist=x.employees||[];document.getElementById("employees").innerHTML=elist.map(e=>`<div class=row><b>${esc(fullName(e))}</b> — ${esc(e.role)} — ${e.active?"Active":"Disabled"}<br><button onclick="toggleEmployee('${e.id}',${!e.active})">${e.active?"Disable":"Enable"}</button>${e.auth_user_id?` <button onclick="resetPin('${e.id}')">Reset PIN</button>`:" <span>Waiting for first PIN setup</span>"}</div>`).join("")}
 async function addEmployee(){try{await api({action:"create",first_name:first.value,last_name:last.value,role:role.value,permissions:{time_clock:true,checklists:true,chemicals_sds:true,job_photos:true,report_issue:true,supply_request:true,policies:true}},session.access_token);first.value=last.value="";await loadEmployees()}catch(e){alert(e.message)}}
 async function toggleEmployee(id,active){try{await api({action:"update",id,active},session.access_token);await loadEmployees()}catch(e){alert(e.message)}}
 async function resetPin(id){const p=prompt("Enter a new 4–8 digit PIN.");if(!/^\d{4,8}$/.test(p||""))return alert("PIN must be 4–8 digits.");try{await api({action:"password",id,password:pinPassword(p)},session.access_token);alert("PIN reset.")}catch(e){alert(e.message)}}
-async function loadPunches(){const {data,error}=await lcs.from("time_entries").select("*").order("clock_in",{ascending:false}).limit(200);punches.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))}</b><br>${fmt(x.clock_in)} → ${x.clock_out?fmt(x.clock_out):"<b>Still clocked in</b>"}${x.edited?" • Edited":""}<br><button type="button" onclick="openPunchV10('${x.id}')">Edit Punch</button></div>`).join("")||"<p>No punches yet.</p>"}
-async function loadChecklists(){const {data,error}=await lcs.from("checklist_sessions").select("id,employee_id,job_reference,started_at,completed_at,employee_notes,checklist_templates(name),checklist_responses(completed,checklist_items(item_text))").order("started_at",{ascending:false}).limit(100);checklists.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.checklist_templates?.name||"Checklist")}</b><br>${esc(x.job_reference||"No job entered")}<br><small>${fmt(x.completed_at||x.started_at)}</small><br>${(x.checklist_responses||[]).filter(r=>r.completed).length}/${(x.checklist_responses||[]).length} tasks completed${x.employee_notes?`<p>${esc(x.employee_notes)}</p>`:""}</div>`).join("")||"<p>No completed checklists yet.</p>"}
-async function loadPhotos(){const {data,error}=await lcs.from("job_photos").select("*,job_photo_groups(property_address,unit_number,service_type,notes)").order("uploaded_at",{ascending:false}).limit(100);if(error)return photos.innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("job-photos",x.storage_path)})));photos.innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_photo_groups?.property_address||"")} ${x.job_photo_groups?.unit_number?"• Unit "+esc(x.job_photo_groups.unit_number):""}<br>${esc(x.job_photo_groups?.service_type||"")}<br><small>${fmt(x.uploaded_at)}</small>${x.caption?`<p>${esc(x.caption)}</p>`:""}${x.url?`<img class=thumb src="${x.url}">`:""}</div>`).join("")||"<p>No job photos yet.</p>"}
-async function loadIssues(){const {data,error}=await lcs.from("issue_reports").select("*").order("created_at",{ascending:false}).limit(100);if(error)return issues.innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("issue-photos",x.photo_storage_path)})));issues.innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_reference||"")}<br><small>${fmt(x.created_at)}</small><p>${esc(x.description)}</p>${x.url?`<img class=thumb src="${x.url}">`:""}<label>Status</label><select onchange="issueStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=reviewing ${x.status==="reviewing"?"selected":""}>Reviewing</option><option value=resolved ${x.status==="resolved"?"selected":""}>Completed</option></select>${x.status!=="resolved"?` <button type="button" onclick="issueStatus(\'${x.id}\',\'resolved\')">Mark Completed</button>`:` <b>✓ Completed</b>`}</div>`).join("")||"<p>No reported problems yet.</p>"}
+async function loadPunches(){try{const {data,error}=await lcs.from("time_entries").select("*").order("clock_in",{ascending:false}).limit(200);document.getElementById("punches").innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))}</b><br>${fmt(x.clock_in)} → ${x.clock_out?fmt(x.clock_out):"<b>Still clocked in</b>"}${x.edited?" • Edited":""}<br><button type="button" onclick="openPunchV10('${x.id}')">Edit Punch</button></div>`).join("")||"<p>No punches yet.</p>"}catch(e){document.getElementById("punches").textContent=e.message||"Could not load time punches."}}
+async function loadChecklists(){try{const {data,error}=await lcs.from("checklist_sessions").select("id,employee_id,job_reference,started_at,completed_at,employee_notes,checklist_templates(name),checklist_responses(completed,checklist_items(item_text))").order("started_at",{ascending:false}).limit(100);document.getElementById("checklists").innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.checklist_templates?.name||"Checklist")}</b><br>${esc(x.job_reference||"No job entered")}<br><small>${fmt(x.completed_at||x.started_at)}</small><br>${(x.checklist_responses||[]).filter(r=>r.completed).length}/${(x.checklist_responses||[]).length} tasks completed${x.employee_notes?`<p>${esc(x.employee_notes)}</p>`:""}</div>`).join("")||"<p>No completed checklists yet.</p>"}catch(e){document.getElementById("checklists").textContent=e.message||"Could not load completed checklists."}}
+async function loadPhotos(){const {data,error}=await lcs.from("job_photos").select("*,job_photo_groups(property_address,unit_number,service_type,notes)").order("uploaded_at",{ascending:false}).limit(100);if(error)return document.getElementById("photos").innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("job-photos",x.storage_path)})));document.getElementById("photos").innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_photo_groups?.property_address||"")} ${x.job_photo_groups?.unit_number?"• Unit "+esc(x.job_photo_groups.unit_number):""}<br>${esc(x.job_photo_groups?.service_type||"")}<br><small>${fmt(x.uploaded_at)}</small>${x.caption?`<p>${esc(x.caption)}</p>`:""}${x.url?`<img class=thumb src="${x.url}">`:""}</div>`).join("")||"<p>No job photos yet.</p>"}
+async function loadIssues(){const {data,error}=await lcs.from("issue_reports").select("*").order("created_at",{ascending:false}).limit(100);if(error)return document.getElementById("issues").innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("issue-photos",x.photo_storage_path)})));document.getElementById("issues").innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_reference||"")}<br><small>${fmt(x.created_at)}</small><p>${esc(x.description)}</p>${x.url?`<img class=thumb src="${x.url}">`:""}<label>Status</label><select onchange="issueStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=reviewing ${x.status==="reviewing"?"selected":""}>Reviewing</option><option value=resolved ${x.status==="resolved"?"selected":""}>Completed</option></select>${x.status!=="resolved"?` <button type="button" onclick="issueStatus(\'${x.id}\',\'resolved\')">Mark Completed</button>`:` <b>✓ Completed</b>`}</div>`).join("")||"<p>No reported problems yet.</p>"}
 async function issueStatus(id,status){const {error}=await lcs.from("issue_reports").update({status,resolved_at:status==="resolved"?new Date().toISOString():null}).eq("id",id);if(error)alert(error.message);await loadIssues()}
-async function loadSupplies(){const {data,error}=await lcs.from("supply_equipment_reports").select("*").order("created_at",{ascending:false}).limit(100);supplies.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.item_name)}</b><br>${esc(x.report_type)}<br><small>${fmt(x.created_at)}</small>${x.description?`<p>${esc(x.description)}</p>`:""}<label>Status</label><select onchange="supplyStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=resolved ${x.status==="resolved"?"selected":""}>Completed</option></select>${x.status!=="resolved"?` <button type="button" onclick="supplyStatus(\'${x.id}\',\'resolved\')">Mark Completed</button>`:` <b>✓ Completed</b>`}</div>`).join("")||"<p>No supply/equipment requests yet.</p>"}
+async function loadSupplies(){const {data,error}=await lcs.from("supply_equipment_reports").select("*").order("created_at",{ascending:false}).limit(100);document.getElementById("supplies").innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.item_name)}</b><br>${esc(x.report_type)}<br><small>${fmt(x.created_at)}</small>${x.description?`<p>${esc(x.description)}</p>`:""}<label>Status</label><select onchange="supplyStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=resolved ${x.status==="resolved"?"selected":""}>Completed</option></select>${x.status!=="resolved"?` <button type="button" onclick="supplyStatus(\'${x.id}\',\'resolved\')">Mark Completed</button>`:` <b>✓ Completed</b>`}</div>`).join("")||"<p>No supply/equipment requests yet.</p>"}
 async function supplyStatus(id,status){const {error}=await lcs.from("supply_equipment_reports").update({status,resolved_at:status==="resolved"?new Date().toISOString():null}).eq("id",id);if(error)alert(error.message);await loadSupplies()}
 
 let adminCalendarYearValue=new Date().getFullYear(),adminYearEntries=[];
@@ -138,4 +164,23 @@ async function savePunchEditV10(){
  setTimeout(()=>punchEditorV10.style.display="none",350);
 }
 closePunchV10.onclick=()=>punchEditorV10.style.display="none";savePunchV10.onclick=savePunchEditV10;
+
+async function loadScheduleAdminV12(){
+ const sel=document.getElementById("schedEmpV12"),box=document.getElementById("schedListV12");if(!sel||!box)return;
+ const active=(empsV9||[]).filter(e=>e.active&&e.role!=="admin");sel.innerHTML=active.map(e=>`<option value="${e.id}">${esc(fullName(e))}</option>`).join("");
+ const now=new Date(),pad=n=>String(n).padStart(2,"0"),today=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+ if(!schedDateV12.value)schedDateV12.value=today;
+ const {data,error}=await lcs.from("employee_schedule").select("id,employee_id,schedule_date,arrival_time").gte("schedule_date",today).order("schedule_date");
+ if(error){box.textContent=error.message;return}
+ box.innerHTML=data?.length?data.map(x=>{const e=(empsV9||[]).find(a=>a.id===x.employee_id),d=new Date(x.schedule_date+"T12:00:00"),[h,m]=x.arrival_time.split(":").map(Number),t=new Date(2000,0,1,h,m).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});return `<div class="emp-card"><b>${esc(e?fullName(e):"Employee")}</b><br>${d.toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"})} · <b>${t}</b> <button type="button" onclick="deleteSchedV12('${x.id}')">Remove</button></div>`}).join(""):"<p>No upcoming arrival times.</p>";
+}
+async function saveScheduleV12(){
+ if(!schedEmpV12.value||!schedDateV12.value||!schedTimeV12.value){schedMsgV12.textContent="Choose employee, date, and arrival time.";return}
+ const {error}=await lcs.from("employee_schedule").upsert({employee_id:schedEmpV12.value,schedule_date:schedDateV12.value,arrival_time:schedTimeV12.value},{onConflict:"employee_id,schedule_date"});
+ schedMsgV12.textContent=error?error.message:"Arrival time saved.";if(!error)loadScheduleAdminV12();
+}
+async function deleteSchedV12(id){const {error}=await lcs.from("employee_schedule").delete().eq("id",id);if(error)schedMsgV12.textContent=error.message;else loadScheduleAdminV12()}
+saveSchedV12.onclick=saveScheduleV12;
+const oldLoadEmpsV12=loadEmpsV9;loadEmpsV9=async function(){await oldLoadEmpsV12();await loadScheduleAdminV12()};
+setTimeout(loadScheduleAdminV12,0);
 </script></body></html>
