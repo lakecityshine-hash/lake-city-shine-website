@@ -1,19 +1,23 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Owner / Admin</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a>
 <div class=card><h2>Employee Management</h2><div class=grid2><div><label>First Name</label><input id=first></div><div><label>Last Name</label><input id=last></div></div><label>Role</label><select id=role><option value=employee>Employee</option><option value=admin>Admin</option></select><button onclick="addEmployee()">Add Employee</button><p>New employees use <b>Create a PIN</b> on their first login.</p><div id=employees></div></div>
-<div class=card><h2>Employee Punch Calendar</h2>
-<div class=card>
+<div class=card><details class="card" id="punchCalendarDetails">
+<summary style="cursor:pointer;font-size:1.35rem;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:12px">
+<span>Employee Punch Calendar</span><span>▼</span>
+</summary>
+<div style="margin-top:14px"><div class=card>
 <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
 <button type=button id=adminPrevYear>←</button><strong id=adminCalendarYear></strong><button type=button id=adminNextYear>→</button>
 </div>
 <p>Tap a day to see every employee who worked that day, their punches, and daily totals.</p>
 <div id=adminYearCalendar style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px"></div>
 <div id=adminDayPunches class=row style="margin-top:12px"></div>
-</div>
+</div></div>
+</details>
 <h2>Time Punches</h2><div id=punches>Loading…</div></div>
 <div class=card><h2>Completed Checklists</h2><div id=checklists>Loading…</div></div>
 <div class=card><h2>Job Photos</h2><div id=photos>Loading…</div></div>
 <div class=card><h2>Reported Problems</h2><div id=issues>Loading…</div></div>
-<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod7"></script><script>
+<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod8"></script><script>
 let session,elist=[];(async()=>{const x=await me(true);session=x.session;await refreshAll()})();
 function nameOf(id){const e=elist.find(e=>e.id===id);return e?fullName(e):"Employee"}
 async function refreshAll(){await loadEmployees();await Promise.all([loadPunches(),loadChecklists(),loadPhotos(),loadIssues(),loadSupplies()])}
@@ -73,5 +77,15 @@ function showAdminDay(d,rows){
 document.getElementById("adminPrevYear").addEventListener("click",()=>{adminCalendarYearValue--;loadAdminYearCalendar()});
 document.getElementById("adminNextYear").addEventListener("click",()=>{if(adminCalendarYearValue<new Date().getFullYear()){adminCalendarYearValue++;loadAdminYearCalendar()}});
 
-(async()=>{try{await loadAdminYearCalendar()}catch(e){const x=document.getElementById("adminYearCalendar");if(x)x.textContent=e?.message||"Calendar could not load."}})();
+let adminCalendarLoaded=false;
+document.getElementById("punchCalendarDetails").addEventListener("toggle",async function(){
+ if(this.open&&!adminCalendarLoaded){
+  adminCalendarLoaded=true;
+  try{await loadAdminYearCalendar()}catch(e){
+   adminCalendarLoaded=false;
+   const x=document.getElementById("adminYearCalendar");
+   if(x)x.textContent=e?.message||"Calendar could not load.";
+  }
+ }
+});
 </script></body></html>
