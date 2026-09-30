@@ -1,1 +1,23 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Employee Portal</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header><main><div class="grid"><div class="card"><h2>✓ Cleaning Checklists</h2><a class="btn" href="checklists.html">Open</a></div><div class="card"><h2>🧴 Chemicals & SDS</h2><a class="btn green" href="chemicals-sds.html">Open</a></div><div class="card"><h2>📷 Job Photos</h2><a class="btn" href="job-photos.html">Open</a></div><div class="card"><h2>⚠ Report an Issue</h2><a class="btn green" href="report-issue.html">Open</a></div><div class="card"><h2>📦 Supply Request</h2><a class="btn" href="supply-request.html">Open</a></div><div class="card"><h2>📘 Company Policies</h2><a class="btn green" href="policies.html">Read</a></div><div id="admin" class="card hidden"><h2>🔐 Owner / Admin</h2><a class="btn" href="admin.html">Open</a></div></div><button style="margin-top:18px" onclick="logout()">Log Out</button><script>let u=guard();if(u&&u.level==='Owner / Admin')admin.classList.remove('hidden')</script></main><script src="portal.js"></script></body></html>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Employee Portal | Lake City Shine</title><link rel="stylesheet" href="portal.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header>
+<main><div class="card"><h2 id="hello">Welcome</h2><div id="clockState"></div><button class="green" id="punch">Clock In</button></div>
+<div class="grid">
+<div class="card"><h2>Cleaning Checklists</h2><a class="btn" href="checklists.html">Open</a></div>
+<div class="card"><h2>Chemicals & SDS</h2><a class="btn" href="chemicals-sds.html">Open</a></div>
+<div class="card"><h2>Job Photos</h2><a class="btn" href="job-photos.html">Open</a></div>
+<div class="card"><h2>Report an Issue</h2><a class="btn" href="report-issue.html">Open</a></div>
+<div class="card"><h2>Cleaning Supply Request</h2><a class="btn" href="supply-request.html">Open</a></div>
+<div class="card"><h2>Company Policies</h2><a class="btn" href="policies.html">Open</a></div>
+<div class="card" id="adminCard" style="display:none"><h2>Owner / Admin</h2><a class="btn" href="admin.html">Open</a></div></div>
+<button id="logout">Sign Out</button></main><script src="supabase-portal.js"></script><script>
+let emp,openEntry;
+(async()=>{emp=await requirePortalUser();if(!emp)return;hello.textContent='Welcome, '+emp.first_name;if(emp.role==='admin')adminCard.style.display='';
+await refresh();})();
+async function refresh(){const {data}=await sb.from('time_entries').select('*').eq('employee_id',emp.id).is('clock_out',null).order('clock_in',{ascending:false}).limit(1);
+openEntry=data&&data[0]; clockState.textContent=openEntry?'Clocked in since '+new Date(openEntry.clock_in).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'You are currently clocked out.';
+punch.textContent=openEntry?'Clock Out':'Clock In';}
+punch.onclick=async()=>{punch.disabled=true;if(openEntry){await sb.from('time_entries').update({clock_out:new Date().toISOString()}).eq('id',openEntry.id)}
+else{await sb.from('time_entries').insert({employee_id:emp.id,clock_in:new Date().toISOString()})} await refresh();punch.disabled=false;};
+logout.onclick=async()=>{await sb.auth.signOut();location.href='login.html'};
+</script></body></html>

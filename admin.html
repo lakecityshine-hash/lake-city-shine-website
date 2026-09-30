@@ -1,1 +1,16 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Owner / Admin</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a><div class="card"><h2>Employee Access</h2><p>Employees set their own PIN. Owner/Admin controls account status and clearance level.</p><div id="list"></div></div><script>let u=guard(true);if(u){list.innerHTML=D().employees.map(e=>`<p><b>${e.name}</b> — <span class="badge">${e.level}</span> — PIN: ${e.pin?'Set':'Not set'} — ${e.active?'Active':'Disabled'}</p>`).join('')}</script></main><script src="portal.js"></script></body></html>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Owner / Admin | Lake City Shine</title><link rel="stylesheet" href="portal.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>.photo{max-width:100%;border-radius:10px;margin-top:8px}.record{border-top:1px solid #ddd;padding:12px 0}</style></head>
+<body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a>
+<div class="card"><h2>Time Punches</h2><div id="times">Loading…</div></div>
+<div class="card"><h2>Job Photos</h2><div id="photos">Loading…</div></div></main>
+<script src="supabase-portal.js"></script><script>
+(async()=>{const me=await requirePortalUser(true);if(!me)return;loadTimes();loadPhotos();})();
+async function loadTimes(){const {data,error}=await sb.from('time_entries').select('id,clock_in,clock_out,employees(first_name,last_name)').order('clock_in',{ascending:false}).limit(100);
+if(error){times.textContent=error.message;return;}times.innerHTML=(data||[]).map(x=>`<div class="record"><b>${x.employees?.first_name||'Employee'} ${x.employees?.last_name||''}</b><br>In: ${new Date(x.clock_in).toLocaleString()}<br>Out: ${x.clock_out?new Date(x.clock_out).toLocaleString():'CLOCKED IN'}</div>`).join('')||'No punches yet.';}
+async function loadPhotos(){const {data,error}=await sb.from('job_photos').select('storage_path,category,caption,uploaded_at,employees(first_name,last_name),job_photo_groups(property_address,unit_number,service_type)').order('uploaded_at',{ascending:false}).limit(100);
+if(error){photos.textContent=error.message;return;}photos.innerHTML='';
+for(const x of data||[]){const {data:s}=await sb.storage.from('job-photos').createSignedUrl(x.storage_path,3600);const g=x.job_photo_groups||{};
+photos.innerHTML+=`<div class="record"><b>${x.employees?.first_name||'Employee'} ${x.employees?.last_name||''}</b><br>${g.property_address||''}${g.unit_number?' — Unit '+g.unit_number:''}<br>${g.service_type||''} • ${x.category} • ${new Date(x.uploaded_at).toLocaleString()}${x.caption?'<br>'+x.caption:''}${s?.signedUrl?`<br><img class="photo" src="${s.signedUrl}">`:''}</div>`;}
+if(!(data||[]).length)photos.textContent='No photos yet.';}
+</script></body></html>

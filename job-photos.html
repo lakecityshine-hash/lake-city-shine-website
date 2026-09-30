@@ -1,1 +1,23 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Job Photos</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Job Photos</h1></header><main><a href="employee-portal.html">← Portal</a><div class="card"><label>Job / Property</label><input><label>Photo Type</label><select><option>Before</option><option>During</option><option>After</option></select><label>Photo</label><input type="file" accept="image/*"><label>Notes</label><textarea></textarea><button>Upload Photo</button><p>Live storage will be connected when the secure backend is deployed.</p></div><script>guard()</script></main><script src="portal.js"></script></body></html>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job Photos | Lake City Shine</title><link rel="stylesheet" href="portal.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
+<body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Job Photos</h1></header><main><a href="employee-portal.html">← Portal</a>
+<div class="card"><h2>Upload Job Photos</h2>
+<label>Property Address *</label><input id="address" placeholder="Street address">
+<label>Unit Number</label><input id="unit" placeholder="Optional">
+<label>Service Type</label><input id="service" placeholder="Move-out, turnover, deep clean, etc.">
+<label>Photo Type</label><select id="category"><option value="before">Before</option><option value="during">During</option><option value="after">After</option></select>
+<label>Notes</label><textarea id="notes"></textarea>
+<label>Photos *</label><input id="files" type="file" accept="image/*" multiple>
+<button class="green" id="upload">Upload Photos</button><p id="msg"></p></div></main>
+<script src="supabase-portal.js"></script><script>
+let emp;(async()=>{emp=await requirePortalUser();})();
+upload.onclick=async()=>{if(!emp)return;if(!address.value.trim()||!files.files.length){msg.textContent='Address and at least one photo are required.';return;}
+upload.disabled=true;msg.textContent='Uploading…';
+const ref=address.value.trim()+(unit.value.trim()?' — Unit '+unit.value.trim():'');
+const {data:g,error:ge}=await sb.from('job_photo_groups').insert({employee_id:emp.id,job_reference:ref,property_address:address.value.trim(),unit_number:unit.value.trim()||null,service_type:service.value.trim()||null,notes:notes.value.trim()||null}).select().single();
+if(ge){msg.textContent=ge.message;upload.disabled=false;return;}
+for(const f of files.files){const safe=f.name.replace(/[^a-zA-Z0-9._-]/g,'_');const path=emp.id+'/'+g.id+'/'+Date.now()+'-'+safe;
+const {error:ue}=await sb.storage.from('job-photos').upload(path,f,{contentType:f.type,upsert:false});if(ue){msg.textContent='Upload error: '+ue.message;upload.disabled=false;return;}
+const {error:pe}=await sb.from('job_photos').insert({photo_group_id:g.id,employee_id:emp.id,category:category.value,storage_path:path,caption:notes.value.trim()||null});if(pe){msg.textContent=pe.message;upload.disabled=false;return;}}
+msg.textContent='Photos uploaded successfully.';files.value='';upload.disabled=false;};
+</script></body></html>
