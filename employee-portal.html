@@ -1,14 +1,17 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Employee Portal</title><link rel="stylesheet" href="portal.css"><link rel="stylesheet" href="schedule-calendar.css?v=16"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header><main><div class=card><h2 id=hello>Welcome</h2><p id=clockStatus></p><button id=clockBtn type=button>Loading…</button><p id=clockHint style="margin-top:10px;font-weight:700"></p><div id="shiftSummary" style="margin-top:12px;font-weight:700"></div></div>
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Employee Portal</title><link rel="stylesheet" href="portal.css"><style>#shiftCalendar{color:#17344d;scroll-margin-top:20px}.sc-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.sc-nav h3{flex:1;margin:8px 0;min-width:160px}.sc-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:16px 0}.sc-weekday{text-align:center;font-size:.8rem;font-weight:700}.sc-day{min-height:72px!important;padding:7px 2px!important;border:1px solid #cbdde5!important;border-radius:10px!important;background:#f5f9fb!important;color:#17344d!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:1rem!important}.sc-day.has-shifts{background:#e1f4e3!important;border-color:#549c57!important}.sc-day[aria-pressed=true]{outline:3px solid #1277ad;outline-offset:0}.sc-day.sc-today{font-weight:900;text-decoration:underline}.sc-day small{font-size:.64rem}.sc-shift{border:1px solid #d6e3e9;border-left:4px solid #57a443;border-radius:10px;padding:14px;margin:12px 0;overflow-wrap:anywhere}.sc-shift p{margin:8px 0;white-space:pre-wrap}.sc-muted{color:#526c7e}.sc-error{color:#a12626}.sc-form label{display:block;font-weight:700;margin:12px 0 5px}.sc-form input,.sc-form select,.sc-form textarea{display:block;width:100%;box-sizing:border-box;padding:12px;font:inherit;border:1px solid #bdccd5;border-radius:8px}.sc-form textarea{min-height:100px}.sc-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.sc-form{padding:16px;background:#f2f7fa;border-radius:12px;margin-top:14px}.sc-times{display:grid;grid-template-columns:1fr 1fr;gap:12px}#sc-status{min-height:1.5em}#shiftCalendar button{cursor:pointer}#shiftCalendar button:disabled{opacity:.5;cursor:wait}@media(max-width:400px){.sc-grid{gap:3px}.sc-day{min-height:60px!important}.sc-day small{font-size:.58rem}}
+</style></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header><main><nav aria-label="Portal navigation" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px"><a class="btn" href="/">← Back to Website</a></nav><div class=card><h2 id=hello>Welcome</h2><p id=clockStatus></p><button id=clockBtn type=button>Loading…</button><p id=clockHint style="margin-top:10px;font-weight:700"></p><div id="shiftSummary" style="margin-top:12px;font-weight:700"></div></div>
 <div class=card><h2>My Hours</h2><div id=weekNav style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button type=button id=prevWeek>← Previous Week</button><button type=button id=currentWeek>Current Week</button><button type=button id=nextWeek>Next Week →</button></div><div id=weekTitle></div><div id=hoursList>Loading hours…</div><div id=weekTotal style="margin-top:12px;font-size:1.15rem;font-weight:800"></div><p style="margin-top:10px">Payroll week: Wednesday through Tuesday. You can review roughly the last month here.</p></div>
-<section class="card" id="shiftCalendar" data-admin="false"></section><div class=card><h2>Employee Tools</h2><div id=links></div></div><button onclick="logout()">Sign Out</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod16"></script><script>let emp,openEntry;
+<section class="card" id="shiftCalendar" data-admin="false"></section><div class=card><h2>Employee Tools</h2><div id=links></div></div><button onclick="logout()">Sign Out</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=calendar17"></script><script>let emp,openEntry;
 (async()=>{
  const helloEl=document.getElementById("hello"), linksEl=document.getElementById("links"), statusEl=document.getElementById("clockStatus"), btnEl=document.getElementById("clockBtn");
  try{
   emp=await requirePortalUser();
   helloEl.textContent="Welcome, "+fullName(emp);
+  if(emp.role==="admin"){const a=document.createElement("a");a.className="btn";a.href="admin.html#shiftCalendar";a.textContent="Manage Employee Calendar";helloEl.after(a);}
   const p=emp.permissions||{},a=[["checklists","checklists.html","Cleaning Checklists"],["chemicals_sds","chemicals-sds.html","Chemicals & SDS"],["job_photos","job-photos.html","Job Photos"],["report_issue","report-issue.html","Report a Problem"],["supply_request","supply-request.html","Supply / Equipment Request"],["policies","policies.html","Policies"]];
   linksEl.innerHTML=a.filter(x=>p[x[0]]!==false).map(x=>`<a class=btn style="display:block;margin:8px 0" href="${x[1]}">${x[2]}</a>`).join("")+(emp.role==="admin"?'<a class=btn style="display:block;margin:8px 0" href="admin.html">Owner / Admin</a>':"");
   await refreshClock();
+  await loadHours();
  }catch(e){
   helloEl.textContent="Portal could not load";
   statusEl.textContent=e?.message||"Please sign out and sign back in.";
@@ -71,4 +74,89 @@ function wireClockHold(){
 }
 wireClockHold();
 async function toggleClock(){document.getElementById("clockBtn").disabled=true;let error;if(openEntry){const ended=new Date(),worked=hoursBetween(openEntry.clock_in,ended);({error}=await lcs.from("time_entries").update({clock_out:ended.toISOString()}).eq("id",openEntry.id));if(!error)document.getElementById("shiftSummary").textContent="Shift complete: "+hoursText(worked)}else({error}=await lcs.from("time_entries").insert({employee_id:emp.id}));if(error)alert(error.message);await refreshClock();document.getElementById("clockBtn").disabled=false}
-</script><script src="schedule-calendar.js?v=16"></script></body></html>
+</script><script>(()=>{
+'use strict';
+const root=document.getElementById('shiftCalendar');if(!root)return;
+const admin=root.dataset.admin==='true',pad=n=>String(n).padStart(2,'0'),key=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Indiana/Indianapolis',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const date=s=>new Date(s+'T12:00:00'),label=s=>date(s).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+const time=s=>{if(!s)return '';const [h,m]=s.split(':').map(Number);return `${h%12||12}:${pad(m)} ${h<12?'AM':'PM'}`};
+let ready=false;
+let month=new Date(date(today).getFullYear(),date(today).getMonth(),1),selected=today,rows=[],people=[],employee,version=0,busy=false;
+root.innerHTML=`<h2>${admin?'Employee Calendar':'My Calendar'}</h2><p>${admin?'Tap a day to view, add, or edit shifts.':'Your scheduled days are marked in green. Tap a day for job details.'}</p><p class="sc-muted">All shift times are Warsaw, Indiana time.</p><div class="sc-nav"><button type="button" id="sc-prev" aria-label="Previous month">←</button><h3 id="sc-month"></h3><button type="button" id="sc-next" aria-label="Next month">→</button><button type="button" id="sc-today">Today</button><button type="button" id="sc-refresh">Refresh</button></div><p id="sc-status" role="status">Loading calendar…</p><div id="sc-grid" class="sc-grid"></div><div id="sc-detail"></div>`;
+const $=id=>document.getElementById('sc-'+id),message=(s,error=false)=>{$('status').textContent=s;$('status').className=error?'sc-error':''};
+async function calendarRequest(query){let timer;try{return await Promise.race([query,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Connection timed out. Refresh the calendar before trying again.')),15000)})])}finally{clearTimeout(timer)}}
+function name(id){const e=people.find(e=>e.id===id);return e?fullName(e):'Employee'}
+function render(){
+ $('month').textContent=month.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+ const grid=$('grid');grid.innerHTML=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<span class="sc-weekday">${x}</span>`).join('');
+ for(let i=0;i<month.getDay();i++)grid.append(document.createElement('span'));
+ const count=new Date(month.getFullYear(),month.getMonth()+1,0).getDate();
+ for(let n=1;n<=count;n++){
+  const d=key(new Date(month.getFullYear(),month.getMonth(),n)),shifts=rows.filter(r=>r.schedule_date===d),b=document.createElement('button');
+  b.type='button';b.className='sc-day'+(shifts.length?' has-shifts':'')+(d===today?' sc-today':'');b.setAttribute('aria-pressed',String(d===selected));b.setAttribute('aria-label',`${label(d)}, ${shifts.length} scheduled shifts`);if(d===today)b.setAttribute('aria-current','date');
+  b.innerHTML=`<span>${n}</span>${shifts.length?`<small>● ${shifts.length} shift${shifts.length===1?'':'s'}</small>`:'<small>&nbsp;</small>'}`;
+  b.onclick=()=>{if(!leaveForm())return;selected=d;render();detail()};grid.append(b);
+ }
+}
+function leaveForm(){return !$('form')||confirm('Close the shift form and discard unsaved changes?')}
+function detail(){
+ const list=rows.filter(r=>r.schedule_date===selected),box=$('detail');
+ box.innerHTML=`<h3>${label(selected)}</h3>${list.length?'':`<p>${admin?'No shifts scheduled.':'You have no shifts scheduled for this day.'}</p>`}`;
+ for(const r of list){const card=document.createElement('article');card.className='sc-shift';card.innerHTML=`${admin?`<strong>${esc(name(r.employee_id))}</strong><br>`:''}<strong>${esc(time(r.arrival_time))}${r.end_time?' – '+esc(time(r.end_time)):''}</strong><h4>${esc(r.job_title||'Scheduled shift')}</h4><p><b>Address:</b> ${esc(r.address||'Not added yet')}</p><p><b>Notes:</b> ${esc(r.notes||'No notes')}</p>`;
+  if(admin){const b=document.createElement('button');b.type='button';b.textContent='Edit Shift';b.onclick=()=>{if(leaveForm())form(r)};card.append(b)}box.append(card);
+ }
+ if(admin){const b=document.createElement('button');b.type='button';b.textContent='+ Add Shift';b.onclick=()=>{if(leaveForm())form()};box.append(b)}
+}
+async function load(){
+ const request=++version;rows=[];render();$('detail').textContent='Loading shifts…';message('Loading calendar…');
+ try{
+  const start=key(month),end=key(new Date(month.getFullYear(),month.getMonth()+1,1));
+  let q=lcs.from('employee_schedule').select('id,employee_id,schedule_date,arrival_time,end_time,job_title,address,notes,updated_at').gte('schedule_date',start).lt('schedule_date',end).order('arrival_time');
+  if(!admin)q=q.eq('employee_id',employee.id);
+  const {data,error}=await calendarRequest(q);if(request!==version)return;if(error)throw error;
+  rows=data||[];render();detail();message(rows.length+` shift${rows.length===1?'':'s'} this month.`);
+ }catch(e){if(request!==version)return;rows=[];render();$('detail').textContent='Calendar unavailable. Tap Refresh to try again.';message(e.message||'Could not load calendar.',true)}
+}
+function form(r){
+ if(!ready){message('Please wait for the calendar to finish loading, or tap Refresh.',true);return}
+ $('form')?.remove();const f=document.createElement('form');f.id='sc-form';f.className='sc-form';
+ const available=people.filter(p=>p.active||p.id===r?.employee_id);
+ f.innerHTML=`<h3>${r?'Edit':'Add'} Shift</h3><label for="sc-employee">Employee</label><select id="sc-employee" required><option value="">Choose employee</option>${available.map(p=>`<option value="${esc(p.id)}">${esc(fullName(p))}${p.active?'':' (inactive)'}</option>`).join('')}</select><label for="sc-date">Date</label><input id="sc-date" type="date" required><div class="sc-times"><div><label for="sc-start">Start time</label><input id="sc-start" type="time" required></div><div><label for="sc-end">End time (optional)</label><input id="sc-end" type="time"></div></div><label for="sc-title">Job / unit (optional)</label><input id="sc-title" maxlength="200"><label for="sc-address">Job address</label><input id="sc-address" required maxlength="500" autocomplete="street-address"><label for="sc-notes">Notes for employee</label><textarea id="sc-notes" maxlength="5000" placeholder="Unit number, entry instructions, supplies, or other job details"></textarea><div class="sc-actions"><button type="submit">Save Shift</button><button type="button" id="sc-cancel">Cancel</button>${r?'<button type="button" id="sc-delete">Delete Shift</button>':''}</div><p id="sc-form-status" role="status"></p>`;
+ $('detail').append(f);$('employee').value=r?.employee_id||'';$('date').value=r?.schedule_date||selected;$('start').value=r?.arrival_time?.slice(0,5)||'';$('end').value=r?.end_time?.slice(0,5)||'';$('title').value=r?.job_title||'';$('address').value=r?.address||'';$('notes').value=r?.notes||'';
+ $('cancel').onclick=()=>f.remove();
+ const lock=v=>{busy=v;root.querySelectorAll('button').forEach(b=>b.disabled=v)};
+ async function persist(remove=false){
+  if(busy)return;if(remove&&!confirm('Delete this scheduled shift?'))return;
+  const end=$('end').value,start=$('start').value;
+  if(!remove&&end&&end<=start){$('form-status').textContent='End time must be after start time on the same day.';return}
+  const patch={employee_id:$('employee').value,schedule_date:$('date').value,arrival_time:start,end_time:end||null,job_title:$('title').value.trim(),address:$('address').value.trim(),notes:$('notes').value.trim(),updated_at:new Date().toISOString()};
+  if(!remove&&!patch.address){$('form-status').textContent='Enter the job address.';return}
+  lock(true);$('form-status').textContent=remove?'Deleting…':'Saving…';
+  try{
+   let q=remove?lcs.from('employee_schedule').delete().eq('id',r.id):r?lcs.from('employee_schedule').update(patch).eq('id',r.id):lcs.from('employee_schedule').insert(patch);
+   if(r)q=q.eq('updated_at',r.updated_at);
+   const {data,error}=await calendarRequest(q.select('id'));if(error)throw error;if(!data?.length)throw Error('This shift changed or your access changed. Cancel and refresh before trying again.');
+   selected=remove?selected:patch.schedule_date;month=new Date(date(selected).getFullYear(),date(selected).getMonth(),1);f.remove();await load();message(remove?'Shift deleted.':'Shift saved. The employee can see it in their calendar.');
+  }catch(e){$('form-status').textContent=e.message||'Could not save shift.'}finally{lock(false)}
+ }
+ f.onsubmit=e=>{e.preventDefault();persist()};if(r)$('delete').onclick=()=>persist(true);$('employee').focus();f.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+for(const [id,offset] of [['prev',-1],['next',1]])$(id).onclick=()=>{if(!leaveForm())return;month=new Date(month.getFullYear(),month.getMonth()+offset,1);selected=key(month);load()};
+$('today').onclick=()=>{if(!leaveForm())return;selected=today;month=new Date(date(today).getFullYear(),date(today).getMonth(),1);load()};
+$('refresh').onclick=()=>{if(leaveForm())init()};
+async function init(){
+ ready=false;const attempt=++version;let timer;
+ message('Loading calendar…');render();$('detail').textContent='Loading your schedule…';
+ try{
+  await Promise.race([(async()=>{
+   const profile=await me(admin);if(attempt!==version)return;employee=profile.employee;
+   if(admin){const {data,error}=await lcs.from('employees').select('id,first_name,last_name,active').order('first_name');if(error)throw error;if(attempt!==version)return;people=data||[]}
+   ready=true;await load();
+  })(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('The calendar is taking too long to connect. Tap Refresh to retry. If it continues, sign out and back in.')),15000)})]);
+ }catch(e){version++;ready=false;message(e.message||'Please sign in again.',true);$('detail').textContent='Could not load the schedule. Use Refresh above to try again.'}
+ finally{clearTimeout(timer)}
+}
+init();
+})();
+</script></body></html>
