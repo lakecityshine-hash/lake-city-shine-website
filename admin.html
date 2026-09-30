@@ -1,10 +1,19 @@
 <!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Owner / Admin</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a>
 <div class=card><h2>Employee Management</h2><div class=grid2><div><label>First Name</label><input id=first></div><div><label>Last Name</label><input id=last></div></div><label>Role</label><select id=role><option value=employee>Employee</option><option value=admin>Admin</option></select><button onclick="addEmployee()">Add Employee</button><p>New employees use <b>Create a PIN</b> on their first login.</p><div id=employees></div></div>
-<div class=card><h2>Time Punches</h2><div id=punches>Loading…</div></div>
+<div class=card><h2>Employee Punch Calendar</h2>
+<div class=card>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+<button type=button id=adminPrevYear>←</button><strong id=adminCalendarYear></strong><button type=button id=adminNextYear>→</button>
+</div>
+<p>Tap a day to see every employee who worked that day, their punches, and daily totals.</p>
+<div id=adminYearCalendar style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px"></div>
+<div id=adminDayPunches class=row style="margin-top:12px"></div>
+</div>
+<h2>Time Punches</h2><div id=punches>Loading…</div></div>
 <div class=card><h2>Completed Checklists</h2><div id=checklists>Loading…</div></div>
 <div class=card><h2>Job Photos</h2><div id=photos>Loading…</div></div>
 <div class=card><h2>Reported Problems</h2><div id=issues>Loading…</div></div>
-<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod2"></script><script>
+<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod6"></script><script>
 let session,elist=[];(async()=>{const x=await me(true);session=x.session;await refreshAll()})();
 function nameOf(id){const e=elist.find(e=>e.id===id);return e?fullName(e):"Employee"}
 async function refreshAll(){await loadEmployees();await Promise.all([loadPunches(),loadChecklists(),loadPhotos(),loadIssues(),loadSupplies()])}
@@ -19,4 +28,49 @@ async function loadIssues(){const {data,error}=await lcs.from("issue_reports").s
 async function issueStatus(id,status){const {error}=await lcs.from("issue_reports").update({status,resolved_at:status==="resolved"?new Date().toISOString():null}).eq("id",id);if(error)alert(error.message);await loadIssues()}
 async function loadSupplies(){const {data,error}=await lcs.from("supply_equipment_reports").select("*").order("created_at",{ascending:false}).limit(100);supplies.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.item_name)}</b><br>${esc(x.report_type)}<br><small>${fmt(x.created_at)}</small>${x.description?`<p>${esc(x.description)}</p>`:""}<label>Status</label><select onchange="supplyStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=resolved ${x.status==="resolved"?"selected":""}>Resolved</option></select></div>`).join("")||"<p>No supply/equipment requests yet.</p>"}
 async function supplyStatus(id,status){const {error}=await lcs.from("supply_equipment_reports").update({status,resolved_at:status==="resolved"?new Date().toISOString():null}).eq("id",id);if(error)alert(error.message);await loadSupplies()}
+
+let adminCalendarYearValue=new Date().getFullYear(),adminYearEntries=[];
+function adminHours(a,b){return Math.max(0,(new Date(b)-new Date(a))/3600000)}
+function adminHoursText(h){return h.toFixed(2)+" hrs"}
+function adminMonthName(m){return new Date(2000,m,1).toLocaleDateString(undefined,{month:"long"})}
+async function loadAdminYearCalendar(){
+ const start=new Date(adminCalendarYearValue,0,1),end=new Date(adminCalendarYearValue+1,0,1);
+ document.getElementById("adminCalendarYear").textContent=adminCalendarYearValue;
+ document.getElementById("adminNextYear").disabled=adminCalendarYearValue>=new Date().getFullYear();
+ const {data,error}=await lcs.from("time_entries").select("id,employee_id,clock_in,clock_out,employees(first_name,last_name)").gte("clock_in",start.toISOString()).lt("clock_in",end.toISOString()).order("clock_in",{ascending:true});
+ if(error){document.getElementById("adminYearCalendar").textContent=error.message;return}
+ adminYearEntries=data||[];renderAdminYearCalendar();
+}
+function renderAdminYearCalendar(){
+ const root=document.getElementById("adminYearCalendar");root.innerHTML="";
+ for(let m=0;m<12;m++){
+  const box=document.createElement("section");box.style.border="1px solid #dbe5eb";box.style.borderRadius="12px";box.style.padding="10px";
+  const h=document.createElement("h3");h.textContent=adminMonthName(m);box.appendChild(h);
+  const grid=document.createElement("div");grid.style.display="grid";grid.style.gridTemplateColumns="repeat(7,1fr)";grid.style.gap="4px";
+  ["S","M","T","W","T","F","S"].forEach(x=>{const d=document.createElement("small");d.textContent=x;d.style.textAlign="center";grid.appendChild(d)});
+  const first=new Date(adminCalendarYearValue,m,1),days=new Date(adminCalendarYearValue,m+1,0).getDate();
+  for(let i=0;i<first.getDay();i++)grid.appendChild(document.createElement("span"));
+  for(let day=1;day<=days;day++){
+   const d=new Date(adminCalendarYearValue,m,day),key=d.toLocaleDateString();
+   const rows=adminYearEntries.filter(x=>new Date(x.clock_in).toLocaleDateString()===key);
+   const b=document.createElement("button");b.type="button";b.style.minHeight="38px";b.style.padding="4px";b.textContent=day;
+   if(rows.length){const people=new Set(rows.map(x=>x.employee_id)).size;b.style.fontWeight="800";b.textContent=day+" •";b.title=people+" employee"+(people===1?"":"s")+" worked";}
+   b.addEventListener("click",()=>showAdminDay(d,rows));grid.appendChild(b);
+  }
+  box.appendChild(grid);root.appendChild(box);
+ }
+}
+function showAdminDay(d,rows){
+ const el=document.getElementById("adminDayPunches");
+ const label=d.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+ if(!rows.length){el.innerHTML=`<b>${label}</b><br>No employee punches.`;return}
+ const groups=new Map();
+ rows.forEach(x=>{const name=[x.employees?.first_name,x.employees?.last_name].filter(Boolean).join(" ")||"Employee";if(!groups.has(x.employee_id))groups.set(x.employee_id,{name,rows:[]});groups.get(x.employee_id).rows.push(x)});
+ let grand=0;
+ const html=[...groups.values()].map(g=>{let total=0;const detail=g.rows.map(x=>{const ci=new Date(x.clock_in),co=x.clock_out?new Date(x.clock_out):new Date(),h=adminHours(ci,co);total+=h;return `${ci.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})} – ${x.clock_out?co.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Still clocked in"} (${adminHoursText(h)})`}).join("<br>");grand+=total;return `<div style="margin-top:10px"><b>${esc(g.name)} — ${adminHoursText(total)}</b><br>${detail}</div>`}).join("");
+ el.innerHTML=`<b>${label}</b>${html}<hr><b>All employees: ${adminHoursText(grand)}</b>`;
+}
+document.getElementById("adminPrevYear").addEventListener("click",()=>{adminCalendarYearValue--;loadAdminYearCalendar()});
+document.getElementById("adminNextYear").addEventListener("click",()=>{if(adminCalendarYearValue<new Date().getFullYear()){adminCalendarYearValue++;loadAdminYearCalendar()}});
+loadAdminYearCalendar();
 </script></body></html>

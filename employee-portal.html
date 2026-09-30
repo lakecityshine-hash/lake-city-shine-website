@@ -1,4 +1,14 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Employee Portal</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header><main><div class=card><h2 id=hello>Welcome</h2><p id=clockStatus></p><button id=clockBtn onclick="toggleClock()">Loading…</button></div><div class=card><h2>Employee Tools</h2><div id=links></div></div><button onclick="logout()">Sign Out</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod2"></script><script>let emp,openEntry;
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Employee Portal</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Employee Portal</h1></header><main><div class=card><h2 id=hello>Welcome</h2><p id=clockStatus></p><button id=clockBtn type=button>Loading…</button><p id=clockHint style="margin-top:10px;font-weight:700"></p><div id="shiftSummary" style="margin-top:12px;font-weight:700"></div></div>
+<div class=card><h2>My Hours</h2><div id=weekNav style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><button type=button id=prevWeek>← Previous Week</button><button type=button id=currentWeek>Current Week</button><button type=button id=nextWeek>Next Week →</button></div><div id=weekTitle></div><div id=hoursList>Loading hours…</div><div id=weekTotal style="margin-top:12px;font-size:1.15rem;font-weight:800"></div><p style="margin-top:10px">Payroll week: Wednesday through Tuesday. You can review roughly the last month here.</p></div>
+<div class=card><h2>Time Punch Calendar</h2>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+<button type=button id=prevYear>←</button><strong id=calendarYear></strong><button type=button id=nextYear>→</button>
+</div>
+<p>Tap a day to see that day's punches. Your full punch history stays stored in the portal.</p>
+<div id=yearCalendar style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px"></div>
+<div id=dayPunches class=row style="margin-top:12px"></div>
+</div>
+<div class=card><h2>Employee Tools</h2><div id=links></div></div><button onclick="logout()">Sign Out</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod6"></script><script>let emp,openEntry;
 (async()=>{
  const helloEl=document.getElementById("hello"), linksEl=document.getElementById("links"), statusEl=document.getElementById("clockStatus"), btnEl=document.getElementById("clockBtn");
  try{
@@ -13,4 +23,97 @@
   btnEl.textContent="Retry";
   btnEl.onclick=()=>location.reload();
  }
-})();async function refreshClock(){const {data,error}=await lcs.from("time_entries").select("*").eq("employee_id",emp.id).is("clock_out",null).order("clock_in",{ascending:false}).limit(1);if(error)return document.getElementById("clockStatus").textContent=error.message;openEntry=data?.[0];document.getElementById("clockStatus").textContent=openEntry?"Clocked in since "+fmt(openEntry.clock_in):"You are currently clocked out.";document.getElementById("clockBtn").textContent=openEntry?"Clock Out":"Clock In"}async function toggleClock(){document.getElementById("clockBtn").disabled=true;let error;if(openEntry)({error}=await lcs.from("time_entries").update({clock_out:new Date().toISOString()}).eq("id",openEntry.id));else({error}=await lcs.from("time_entries").insert({employee_id:emp.id}));if(error)alert(error.message);await refreshClock();document.getElementById("clockBtn").disabled=false}</script></body></html>
+})();async function refreshClock(){const {data,error}=await lcs.from("time_entries").select("*").eq("employee_id",emp.id).is("clock_out",null).order("clock_in",{ascending:false}).limit(1);if(error)return document.getElementById("clockStatus").textContent=error.message;openEntry=data?.[0];document.getElementById("clockStatus").textContent=openEntry?"Clocked in since "+fmt(openEntry.clock_in):"You are currently clocked out.";document.getElementById("clockBtn").textContent=openEntry?"Hold 2 sec to Clock Out":"Hold 2 sec to Clock In";document.getElementById("clockHint").textContent="Press and hold for 2 seconds. Releasing early cancels it."}
+
+let calendarYearValue=new Date().getFullYear(),yearEntries=[];
+function monthName(m){return new Date(2000,m,1).toLocaleDateString(undefined,{month:"long"})}
+async function loadYearCalendar(){
+ if(!emp)return;
+ const start=new Date(calendarYearValue,0,1),end=new Date(calendarYearValue+1,0,1);
+ document.getElementById("calendarYear").textContent=calendarYearValue;
+ document.getElementById("nextYear").disabled=calendarYearValue>=new Date().getFullYear();
+ const {data,error}=await lcs.from("time_entries").select("id,clock_in,clock_out").eq("employee_id",emp.id).gte("clock_in",start.toISOString()).lt("clock_in",end.toISOString()).order("clock_in",{ascending:true});
+ if(error){document.getElementById("yearCalendar").textContent=error.message;return}
+ yearEntries=data||[];renderYearCalendar();
+}
+function renderYearCalendar(){
+ const root=document.getElementById("yearCalendar");root.innerHTML="";
+ for(let m=0;m<12;m++){
+  const box=document.createElement("section");box.style.border="1px solid #dbe5eb";box.style.borderRadius="12px";box.style.padding="10px";
+  const h=document.createElement("h3");h.textContent=monthName(m);box.appendChild(h);
+  const grid=document.createElement("div");grid.style.display="grid";grid.style.gridTemplateColumns="repeat(7,1fr)";grid.style.gap="4px";
+  ["S","M","T","W","T","F","S"].forEach(x=>{const d=document.createElement("small");d.textContent=x;d.style.textAlign="center";grid.appendChild(d)});
+  const first=new Date(calendarYearValue,m,1),days=new Date(calendarYearValue,m+1,0).getDate();
+  for(let i=0;i<first.getDay();i++)grid.appendChild(document.createElement("span"));
+  for(let day=1;day<=days;day++){
+   const d=new Date(calendarYearValue,m,day),key=d.toLocaleDateString();
+   const rows=yearEntries.filter(x=>new Date(x.clock_in).toLocaleDateString()===key);
+   const b=document.createElement("button");b.type="button";b.textContent=day;b.style.minHeight="38px";b.style.padding="4px";
+   if(rows.length){const hrs=rows.reduce((n,x)=>n+hoursBetween(x.clock_in,x.clock_out||new Date()),0);b.title=hoursText(hrs);b.style.fontWeight="800";b.textContent=day+" •";}
+   b.addEventListener("click",()=>showDay(d,rows));grid.appendChild(b);
+  }
+  box.appendChild(grid);root.appendChild(box);
+ }
+}
+function showDay(d,rows){
+ const el=document.getElementById("dayPunches");
+ if(!rows.length){el.innerHTML=`<b>${dateLabel(d)}</b><br>No punches.`;return}
+ let total=0;const detail=rows.map(x=>{const ci=new Date(x.clock_in),co=x.clock_out?new Date(x.clock_out):new Date(),h=hoursBetween(ci,co);total+=h;return `${ci.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})} – ${x.clock_out?co.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Still clocked in"} (${hoursText(h)})`}).join("<br>");
+ el.innerHTML=`<b>${dateLabel(d)} — ${hoursText(total)}</b><br>${detail}`;
+}
+let weekOffset=0;
+const MS_DAY=86400000;
+function localDateStart(d){return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+function payrollStart(base=new Date()){
+ const d=localDateStart(base),day=d.getDay(),back=(day-3+7)%7;
+ d.setDate(d.getDate()-back); return d;
+}
+function rangeForOffset(off){
+ const start=payrollStart(); start.setDate(start.getDate()+off*7);
+ const end=new Date(start); end.setDate(end.getDate()+7);
+ return {start,end};
+}
+function hoursBetween(a,b){return Math.max(0,(new Date(b)-new Date(a))/3600000)}
+function hoursText(h){return h.toFixed(2)+" hrs"}
+function dateLabel(d){return d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"})}
+async function loadHours(){
+ if(!emp)return;
+ const {start,end}=rangeForOffset(weekOffset);
+ const {data,error}=await lcs.from("time_entries").select("id,clock_in,clock_out").eq("employee_id",emp.id).gte("clock_in",start.toISOString()).lt("clock_in",end.toISOString()).order("clock_in",{ascending:true});
+ const title=document.getElementById("weekTitle"),list=document.getElementById("hoursList"),totalEl=document.getElementById("weekTotal");
+ title.innerHTML=`<b>${dateLabel(start)} – ${dateLabel(new Date(end.getTime()-MS_DAY))}</b>`;
+ if(error){list.textContent=error.message;totalEl.textContent="";return}
+ const rows=data||[],days=new Map(),now=new Date();
+ rows.forEach(x=>{const ci=new Date(x.clock_in),co=x.clock_out?new Date(x.clock_out):now,key=ci.toLocaleDateString();const h=hoursBetween(ci,co);if(!days.has(key))days.set(key,{date:ci,hours:0,shifts:[]});const d=days.get(key);d.hours+=h;d.shifts.push({ci,co,open:!x.clock_out,h})});
+ let total=0;
+ list.innerHTML=days.size?[...days.values()].map(d=>{total+=d.hours;return `<div class=row><b>${dateLabel(d.date)}</b> — ${hoursText(d.hours)}<br>${d.shifts.map(x=>`${x.ci.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})} – ${x.open?"Still clocked in":x.co.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})} (${hoursText(x.h)})`).join("<br>")}</div>`}).join(""):"<p>No time punches this week.</p>";
+ totalEl.textContent="Week total: "+hoursText(total);
+ document.getElementById("nextWeek").disabled=weekOffset>=0;
+}
+document.getElementById("prevYear").addEventListener("click",()=>{calendarYearValue--;loadYearCalendar()});
+document.getElementById("nextYear").addEventListener("click",()=>{if(calendarYearValue<new Date().getFullYear()){calendarYearValue++;loadYearCalendar()}});
+document.getElementById("prevWeek").addEventListener("click",()=>{if(weekOffset>-4){weekOffset--;loadHours()}});
+document.getElementById("nextWeek").addEventListener("click",()=>{if(weekOffset<0){weekOffset++;loadHours()}});
+document.getElementById("currentWeek").addEventListener("click",()=>{weekOffset=0;loadHours()});
+let clockHoldTimer=null;
+function startClockHold(e){
+ e.preventDefault();
+ const b=document.getElementById("clockBtn");
+ if(b.disabled)return;
+ b.textContent="Keep holding…";
+ clockHoldTimer=setTimeout(async()=>{clockHoldTimer=null;b.textContent="Confirmed ✓";if(navigator.vibrate)navigator.vibrate(80);await toggleClock()},2000);
+}
+function cancelClockHold(e){
+ if(e)e.preventDefault();
+ if(clockHoldTimer){clearTimeout(clockHoldTimer);clockHoldTimer=null;refreshClock();}
+}
+function wireClockHold(){
+ const b=document.getElementById("clockBtn");
+ b.onclick=null;
+ b.addEventListener("pointerdown",startClockHold);
+ b.addEventListener("pointerup",cancelClockHold);
+ b.addEventListener("pointercancel",cancelClockHold);
+ b.addEventListener("pointerleave",cancelClockHold);
+}
+wireClockHold();
+async function toggleClock(){document.getElementById("clockBtn").disabled=true;let error;if(openEntry){const ended=new Date(),worked=hoursBetween(openEntry.clock_in,ended);({error}=await lcs.from("time_entries").update({clock_out:ended.toISOString()}).eq("id",openEntry.id));if(!error)document.getElementById("shiftSummary").textContent="Shift complete: "+hoursText(worked)}else({error}=await lcs.from("time_entries").insert({employee_id:emp.id}));if(error)alert(error.message);await refreshClock();document.getElementById("clockBtn").disabled=false}</script></body></html>
