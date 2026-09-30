@@ -12,10 +12,24 @@ section{padding:92px 5%}.wrap{max-width:1180px;margin:auto}.section-tag{color:va
 .pagehero{padding:75px 5%;background:linear-gradient(120deg,var(--navy),#087d9f);color:white}.pagehero .wrap{max-width:1000px}.pagehero h1{font-size:52px;margin:12px 0}.content{max-width:1000px;margin:auto}.content h2{font-size:34px}.content p{line-height:1.75;color:#526678}.featuregrid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:30px}.feature{padding:0;border:1px solid #e0eaf0;border-radius:14px;background:#fbfdfe;overflow:hidden}.feature img{width:100%;height:210px;object-fit:cover;display:block}.feature .featurebody{padding:24px}.feature h3{margin-top:0}
 @media(max-width:900px){.top{display:none}.nav{height:76px}.brand img{width:180px}.links{display:none}.mobile{display:block;font-size:27px;color:var(--navy)}.hero{min-height:auto;padding:65px 0 90px}.hero-inner{grid-template-columns:1fr}.hero h1{font-size:45px}.hero-card{display:none}.trust{grid-template-columns:1fr 1fr;gap:22px}.trust div{border:0}.cards,.reviewgrid,.commercial .panel{grid-template-columns:1fr}.split{grid-template-columns:1fr}.section-title{font-size:36px}.footgrid{grid-template-columns:1fr 1fr}.ctabox{display:block}.ctabox .buttons{margin-top:25px}.pagehero h1{font-size:40px}}
 @media(max-width:520px){.hero h1{font-size:40px}.trust{margin-top:-30px;padding:20px 10px}.cards{gap:14px}section{padding:68px 5%}.footgrid{grid-template-columns:1fr}.featuregrid{grid-template-columns:1fr}}
+
+.quick-contact{background:#f3f8fb;padding:8px 5%;display:flex;justify-content:flex-end;gap:10px;border-bottom:1px solid #dfeaf0}.quick-contact a{display:inline-flex;align-items:center;justify-content:center;padding:10px 18px;border-radius:8px;font-weight:800;font-size:14px}.quick-call{background:#087eb7;color:#fff}.quick-text{background:#69b72d;color:#fff}@media(max-width:900px){.quick-contact{display:grid;grid-template-columns:1fr 1fr;padding:8px 4%;position:sticky;top:0;z-index:30}.quick-contact a{padding:11px 8px}.nav{top:55px}}
+
+/* Mobile navigation */
+@media(max-width:900px){
+  .mobile{cursor:pointer;user-select:none;padding:10px;position:relative;z-index:42}
+  .links.mobile-open{display:flex;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;gap:0;padding:12px 5% 20px;box-shadow:0 18px 30px #001b3428;z-index:40}
+  .links.mobile-open>a,.links.mobile-open>.drop>a{display:block;padding:14px 10px;border-bottom:1px solid #e8eef2}
+  .links.mobile-open .drop{width:100%}
+  .links.mobile-open .dropmenu{display:block;position:static;box-shadow:none;padding:0 0 4px 14px;min-width:0;border-radius:0}
+  .links.mobile-open .dropmenu a{padding:11px 10px;color:#526678}
+}
+
 </style></head><body>
 <div class="top"><span>Professional Cleaning & Property Services • Warsaw, Indiana</span><span>(574) 377-8097 &nbsp; | &nbsp; 100% Satisfaction Guarantee</span></div>
+<div class="quick-contact"><a class="quick-call" href="tel:+15743778097">Call (574) 377-8097</a><a class="quick-text" href="sms:+15743778097">Text Us</a></div>
 <nav class="nav">
-<a class="brand" href="index.html"><img src="assets/22dd327620ddeda2.png" alt="Lake City Shine Cleaning Solutions"></a>
+<a class="brand" href="index.html"><img src="22dd327620ddeda2.png" alt="Lake City Shine Cleaning Solutions"></a>
 <div class="links">
 <a href="index.html">Home</a>
 <div class="drop"><a href="residential.html">Residential ▾</a><div class="dropmenu">
@@ -25,19 +39,39 @@ section{padding:92px 5%}.wrap{max-width:1180px;margin:auto}.section-tag{color:va
 <a href="commercial.html">Commercial Cleaning</a><a href="turnovers.html">Apartment Turnovers</a><a href="post-construction.html">Post-Construction</a>
 </div></div>
 <div class="drop"><div class="dropmenu"><a href="pressure-washing.html">Pressure Washing</a></div></div>
-<a href="about.html">About</a><a href="contact.html">Contact</a><a class="quote" href="contact.html">Get a Free Quote</a>
+<a href="faq.html">FAQ</a><a href="about.html">About</a><a href="contact.html">Contact</a><a href="login.html" style="font-size:12px;font-weight:600;opacity:.72">Employee Portal</a><a class="quote" href="contact.html">Get a Free Quote</a>
 </div><div class="mobile">☰</div>
 </nav>
 <header class="pagehero"><div class="wrap"><div class="eyebrow">MOVE-IN & MOVE-OUT CLEANING</div><h1>Leave the old place behind. Start the new one clean.</h1><p style="font-size:19px;line-height:1.65;max-width:720px;color:#d9e9f2">Detailed property cleaning for moves, vacancies and homes preparing for new occupants.</p><div class="buttons"><a class="btn primary" href="contact.html">Request a Free Quote</a><a class="btn secondary" href="tel:+15743778097">Call Now</a></div></div></header><section><div class="content"><div class="section-tag">LAKE CITY SHINE</div><h2>Professional service, built around your property.</h2><p>Detailed property cleaning for moves, vacancies and homes preparing for new occupants. Every job is approached with clear communication, attention to detail and the goal of delivering a finished result you can feel confident about.</p><div class="featuregrid">
-<div class="feature"><img src="assets/e54c1a96a1733c1d.jpg" alt="Clean oven and stovetop"><div class="featurebody"><h3>Appliance Interiors</h3><p>Inside the refrigerator, freezer and oven can be cleaned so the kitchen is ready for the next move.</p></div></div>
-<div class="feature"><img src="assets/813db85b303e3b4b.jpg" alt="Clean kitchen cabinets and appliances"><div class="featurebody"><h3>Cabinets & Drawers</h3><p>Inside and outside of cabinets and drawers are cleaned to remove dust, crumbs and residue left behind.</p></div></div>
-<div class="feature"><img src="assets/07d61272d55dc9b1.jpg" alt="Clean move-in bathroom"><div class="featurebody"><h3>Bathrooms & Kitchens</h3><p>Detailed cleaning of tubs, showers, toilets, sinks, vanities, counters and other high-use areas.</p></div></div>
-<div class="feature"><img src="assets/c73ed6e2bacce1c2.jpg" alt="Clean kitchen and finished floors"><div class="featurebody"><h3>Floors, Trim & Touchpoints</h3><p>Floors are vacuumed and mopped, with attention to doors, handles, switches, trim and other finishing details.</p></div></div>
+<div class="feature"><img src="e54c1a96a1733c1d.jpg" alt="Clean oven and stovetop"><div class="featurebody"><h3>Appliance Interiors</h3><p>Inside the refrigerator, freezer and oven can be cleaned so the kitchen is ready for the next move.</p></div></div>
+<div class="feature"><img src="813db85b303e3b4b.jpg" alt="Clean kitchen cabinets and appliances"><div class="featurebody"><h3>Cabinets & Drawers</h3><p>Inside and outside of cabinets and drawers are cleaned to remove dust, crumbs and residue left behind.</p></div></div>
+<div class="feature"><img src="07d61272d55dc9b1.jpg" alt="Clean move-in bathroom"><div class="featurebody"><h3>Bathrooms & Kitchens</h3><p>Detailed cleaning of tubs, showers, toilets, sinks, vanities, counters and other high-use areas.</p></div></div>
+<div class="feature"><img src="c73ed6e2bacce1c2.jpg" alt="Clean kitchen and finished floors"><div class="featurebody"><h3>Floors, Trim & Touchpoints</h3><p>Floors are vacuumed and mopped, with attention to doors, handles, switches, trim and other finishing details.</p></div></div>
 </div></div></section>
 <div class="cta"><div class="ctabox"><div><h2>Ready for a cleaner property?</h2><div>Tell us what you need. We'll build a cleaning plan around your space.</div></div><div class="buttons"><a class="btn" style="background:white;color:#07557a" href="contact.html">Request a Free Quote</a><a class="btn secondary" href="tel:+15743778097">Call (574) 377-8097</a></div></div></div>
-<footer class="footer"><div class="footgrid"><div><img src="assets/22dd327620ddeda2.png" alt="Lake City Shine"><p style="color:#bdd0de;line-height:1.6">Professional cleaning and property services for homes, businesses, apartments and construction projects throughout Northern Indiana.</p></div>
+<footer class="footer"><div class="footgrid"><div><img src="22dd327620ddeda2.png" alt="Lake City Shine"><p style="color:#bdd0de;line-height:1.6">Professional cleaning and property services for homes, businesses, apartments and construction projects throughout Northern Indiana.</p></div>
 <div><h4>Cleaning Services</h4><a href="move-in-out.html">Move-In / Move-Out</a><a href="deep-cleaning.html">Deep Cleaning</a><a href="turnovers.html">Apartment Turnovers</a><a href="post-construction.html">Post-Construction</a></div>
 <div><h4>Property Services</h4><a href="commercial.html">Commercial Cleaning</a><a href="pressure-washing.html">Pressure Washing</a><a href="contact.html">Request a Quote</a></div>
-<div><h4>Lake City Shine</h4><a href="about.html">About Us</a><a href="tel:+15743778097">(574) 377-8097</a><a href="contact.html">Contact</a><a href="#">Warsaw, Indiana</a></div></div>
+<div><h4>Lake City Shine</h4><a href="about.html">About Us</a><a href="faq.html">FAQ</a><a href="tel:+15743778097">(574) 377-8097</a><a href="contact.html">Contact</a><a href="#">Warsaw, Indiana</a></div></div>
 <div class="copyright">© 2026 Lake City Shine Cleaning Solutions LLC. All rights reserved.</div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var button=document.querySelector('.mobile');
+  var links=document.querySelector('.links');
+  if(!button||!links)return;
+  button.setAttribute('role','button');
+  button.setAttribute('aria-label','Open navigation menu');
+  button.setAttribute('aria-expanded','false');
+  button.addEventListener('click',function(){
+    var open=links.classList.toggle('mobile-open');
+    button.textContent=open?'✕':'☰';
+    button.setAttribute('aria-expanded',open?'true':'false');
+  });
+  links.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){
+    if(window.innerWidth<=900){links.classList.remove('mobile-open');button.textContent='☰';button.setAttribute('aria-expanded','false');}
+  });});
+});
+</script>
+
 </body></html>

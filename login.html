@@ -4,7 +4,7 @@
 <main><div class="card"><h2>Secure Sign In</h2><p>Use your employee email and password.</p>
 <label>Email</label><input id="email" type="email" autocomplete="email">
 <label>Password</label><input id="password" type="password" autocomplete="current-password">
-<button class="green" id="go">Sign In</button><p id="msg"></p></div></main>
+<button class="green" id="go">Sign In</button><p id="msg"></p><p><a href="owner-setup.html">First-time Owner/Admin setup</a></p></div></main>
 <script src="supabase-portal.js"></script><script>
 go.onclick=async()=>{msg.textContent='Signing in…';const {error}=await sb.auth.signInWithPassword({email:email.value.trim(),password:password.value});
 if(error){msg.textContent=error.message;return;} const e=await requirePortalUser(); if(e)location.href='employee-portal.html';};
