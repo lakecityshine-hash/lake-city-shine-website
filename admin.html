@@ -1,6 +1,25 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Owner / Admin</title><link rel="stylesheet" href="portal.css"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a>
-<div class=card><h2>Employee Management</h2><div class=grid2><div><label>First Name</label><input id=first></div><div><label>Last Name</label><input id=last></div></div><label>Role</label><select id=role><option value=employee>Employee</option><option value=admin>Admin</option></select><button onclick="addEmployee()">Add Employee</button><p>New employees use <b>Create a PIN</b> on their first login.</p><div id=employees></div></div>
-<div class=card><details class="card" id="punchCalendarDetails">
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Owner / Admin</title><link rel="stylesheet" href="portal.css"><style>
+.emp-card{border:1px solid #dce7ed;border-radius:13px;padding:14px;margin:10px 0}.emp-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+#employeeEditor{display:none;position:fixed;inset:0;background:#0008;z-index:9999;padding:18px;overflow:auto}
+#employeeEditor .modal{max-width:520px;margin:4vh auto;background:white;border-radius:16px;padding:20px;color:#17344d}
+#employeeEditor label{display:block;font-weight:700;margin:10px 0 5px}#employeeEditor input,#employeeEditor select{width:100%;box-sizing:border-box;padding:11px}
+.perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.perm-grid label{font-weight:500;display:flex;gap:6px;align-items:center}.perm-grid input{width:auto!important}.danger{background:#a92d2d!important}
+</style></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a>
+<div class=card><div class="card" id="employeeManagementV9"><h2>Employees</h2>
+<p>Add employees, edit their information and access, reset their PIN, or remove them.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="newFirstV9" placeholder="First name"><input id="newLastV9" placeholder="Last name"></div>
+<button type="button" id="addEmployeeV9" style="margin-top:9px">Add Employee</button><div id="employeeListV9">Loading employees…</div><div id="employeeMsgV9"></div></div>
+<div id="employeeEditor"><div class="modal"><button type="button" id="closeEditV9">← Cancel</button><h2>Edit Employee</h2>
+<input type="hidden" id="editIdV9"><label>First Name</label><input id="editFirstV9"><label>Last Name</label><input id="editLastV9">
+<label>Role</label><select id="editRoleV9"><option value="employee">Employee</option><option value="admin">Admin</option></select>
+<label>Portal Permissions</label><div class="perm-grid" id="permsV9">
+<label><input type="checkbox" data-p="time_clock"> Time Clock</label><label><input type="checkbox" data-p="checklists"> Checklists</label>
+<label><input type="checkbox" data-p="job_photos"> Job Photos</label><label><input type="checkbox" data-p="chemicals_sds"> Chemicals & SDS</label>
+<label><input type="checkbox" data-p="report_issue"> Report Issue</label><label><input type="checkbox" data-p="supply_request"> Supply Request</label>
+<label><input type="checkbox" data-p="policies"> Policies</label></div>
+<button type="button" id="saveEditV9">Save Changes</button><hr><h3>Reset PIN</h3>
+<div style="display:flex;gap:8px"><input id="pinV9" inputmode="numeric" maxlength="8" placeholder="4–8 digit PIN"><button type="button" id="resetPinV9">Reset PIN</button></div>
+<hr><button type="button" class="danger" id="removeV9">Remove Employee</button><p>Old time punches and records will be kept.</p><div id="editMsgV9"></div></div></div><details class="card" id="punchCalendarDetails">
 <summary style="cursor:pointer;font-size:1.35rem;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:12px">
 <span>Employee Punch Calendar</span><span>▼</span>
 </summary>
@@ -17,7 +36,7 @@
 <div class=card><h2>Completed Checklists</h2><div id=checklists>Loading…</div></div>
 <div class=card><h2>Job Photos</h2><div id=photos>Loading…</div></div>
 <div class=card><h2>Reported Problems</h2><div id=issues>Loading…</div></div>
-<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod9"></script><script>
+<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod11"></script><script>
 let session,elist=[];(async()=>{const x=await me(true);session=x.session;await refreshAll()})();
 function nameOf(id){const e=elist.find(e=>e.id===id);return e?fullName(e):"Employee"}
 async function refreshAll(){await loadEmployees();await Promise.all([loadPunches(),loadChecklists(),loadPhotos(),loadIssues(),loadSupplies()])}
@@ -25,12 +44,12 @@ async function loadEmployees(){const x=await api({action:"list"},session.access_
 async function addEmployee(){try{await api({action:"create",first_name:first.value,last_name:last.value,role:role.value,permissions:{time_clock:true,checklists:true,chemicals_sds:true,job_photos:true,report_issue:true,supply_request:true,policies:true}},session.access_token);first.value=last.value="";await loadEmployees()}catch(e){alert(e.message)}}
 async function toggleEmployee(id,active){try{await api({action:"update",id,active},session.access_token);await loadEmployees()}catch(e){alert(e.message)}}
 async function resetPin(id){const p=prompt("Enter a new 4–8 digit PIN.");if(!/^\d{4,8}$/.test(p||""))return alert("PIN must be 4–8 digits.");try{await api({action:"password",id,password:pinPassword(p)},session.access_token);alert("PIN reset.")}catch(e){alert(e.message)}}
-async function loadPunches(){const {data,error}=await lcs.from("time_entries").select("*").order("clock_in",{ascending:false}).limit(200);punches.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))}</b><br>${fmt(x.clock_in)} → ${x.clock_out?fmt(x.clock_out):"<b>Still clocked in</b>"}${x.edited?" • Edited":""}</div>`).join("")||"<p>No punches yet.</p>"}
+async function loadPunches(){const {data,error}=await lcs.from("time_entries").select("*").order("clock_in",{ascending:false}).limit(200);punches.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))}</b><br>${fmt(x.clock_in)} → ${x.clock_out?fmt(x.clock_out):"<b>Still clocked in</b>"}${x.edited?" • Edited":""}<br><button type="button" onclick="openPunchV10('${x.id}')">Edit Punch</button></div>`).join("")||"<p>No punches yet.</p>"}
 async function loadChecklists(){const {data,error}=await lcs.from("checklist_sessions").select("id,employee_id,job_reference,started_at,completed_at,employee_notes,checklist_templates(name),checklist_responses(completed,checklist_items(item_text))").order("started_at",{ascending:false}).limit(100);checklists.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.checklist_templates?.name||"Checklist")}</b><br>${esc(x.job_reference||"No job entered")}<br><small>${fmt(x.completed_at||x.started_at)}</small><br>${(x.checklist_responses||[]).filter(r=>r.completed).length}/${(x.checklist_responses||[]).length} tasks completed${x.employee_notes?`<p>${esc(x.employee_notes)}</p>`:""}</div>`).join("")||"<p>No completed checklists yet.</p>"}
 async function loadPhotos(){const {data,error}=await lcs.from("job_photos").select("*,job_photo_groups(property_address,unit_number,service_type,notes)").order("uploaded_at",{ascending:false}).limit(100);if(error)return photos.innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("job-photos",x.storage_path)})));photos.innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_photo_groups?.property_address||"")} ${x.job_photo_groups?.unit_number?"• Unit "+esc(x.job_photo_groups.unit_number):""}<br>${esc(x.job_photo_groups?.service_type||"")}<br><small>${fmt(x.uploaded_at)}</small>${x.caption?`<p>${esc(x.caption)}</p>`:""}${x.url?`<img class=thumb src="${x.url}">`:""}</div>`).join("")||"<p>No job photos yet.</p>"}
-async function loadIssues(){const {data,error}=await lcs.from("issue_reports").select("*").order("created_at",{ascending:false}).limit(100);if(error)return issues.innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("issue-photos",x.photo_storage_path)})));issues.innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_reference||"")}<br><small>${fmt(x.created_at)}</small><p>${esc(x.description)}</p>${x.url?`<img class=thumb src="${x.url}">`:""}<label>Status</label><select onchange="issueStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=reviewing ${x.status==="reviewing"?"selected":""}>Reviewing</option><option value=resolved ${x.status==="resolved"?"selected":""}>Resolved</option></select></div>`).join("")||"<p>No reported problems yet.</p>"}
+async function loadIssues(){const {data,error}=await lcs.from("issue_reports").select("*").order("created_at",{ascending:false}).limit(100);if(error)return issues.innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("issue-photos",x.photo_storage_path)})));issues.innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_reference||"")}<br><small>${fmt(x.created_at)}</small><p>${esc(x.description)}</p>${x.url?`<img class=thumb src="${x.url}">`:""}<label>Status</label><select onchange="issueStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=reviewing ${x.status==="reviewing"?"selected":""}>Reviewing</option><option value=resolved ${x.status==="resolved"?"selected":""}>Completed</option></select>${x.status!=="resolved"?` <button type="button" onclick="issueStatus(\'${x.id}\',\'resolved\')">Mark Completed</button>`:` <b>✓ Completed</b>`}</div>`).join("")||"<p>No reported problems yet.</p>"}
 async function issueStatus(id,status){const {error}=await lcs.from("issue_reports").update({status,resolved_at:status==="resolved"?new Date().toISOString():null}).eq("id",id);if(error)alert(error.message);await loadIssues()}
-async function loadSupplies(){const {data,error}=await lcs.from("supply_equipment_reports").select("*").order("created_at",{ascending:false}).limit(100);supplies.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.item_name)}</b><br>${esc(x.report_type)}<br><small>${fmt(x.created_at)}</small>${x.description?`<p>${esc(x.description)}</p>`:""}<label>Status</label><select onchange="supplyStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=resolved ${x.status==="resolved"?"selected":""}>Resolved</option></select></div>`).join("")||"<p>No supply/equipment requests yet.</p>"}
+async function loadSupplies(){const {data,error}=await lcs.from("supply_equipment_reports").select("*").order("created_at",{ascending:false}).limit(100);supplies.innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.item_name)}</b><br>${esc(x.report_type)}<br><small>${fmt(x.created_at)}</small>${x.description?`<p>${esc(x.description)}</p>`:""}<label>Status</label><select onchange="supplyStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=resolved ${x.status==="resolved"?"selected":""}>Completed</option></select>${x.status!=="resolved"?` <button type="button" onclick="supplyStatus(\'${x.id}\',\'resolved\')">Mark Completed</button>`:` <b>✓ Completed</b>`}</div>`).join("")||"<p>No supply/equipment requests yet.</p>"}
 async function supplyStatus(id,status){const {error}=await lcs.from("supply_equipment_reports").update({status,resolved_at:status==="resolved"?new Date().toISOString():null}).eq("id",id);if(error)alert(error.message);await loadSupplies()}
 
 let adminCalendarYearValue=new Date().getFullYear(),adminYearEntries=[];
@@ -88,4 +107,35 @@ document.getElementById("punchCalendarDetails").addEventListener("toggle",async 
   }
  }
 });
+
+let empsV9=[];
+async function tokV9(){const {data:{session}}=await lcs.auth.getSession();return session?.access_token}
+async function callV9(body){return api(body,await tokV9())}
+async function loadEmpsV9(){try{const x=await callV9({action:"list"});empsV9=x.employees||[];const a=empsV9.filter(e=>e.active);document.getElementById("employeeListV9").innerHTML=a.length?a.map(e=>`<div class="emp-card"><b>${esc(fullName(e))}</b><div>${e.role==="admin"?"Admin":"Employee"} · ${e.auth_user_id?"PIN created":"Waiting for PIN setup"}</div><div class="emp-actions"><button type="button" onclick="editEmpV9('${e.id}')">Edit</button></div></div>`).join(""):"<p>No active employees.</p>"}catch(e){document.getElementById("employeeListV9").textContent=e.message}}
+async function addEmpV9(){const f=document.getElementById("newFirstV9").value.trim(),l=document.getElementById("newLastV9").value.trim(),m=document.getElementById("employeeMsgV9");if(!f||!l){m.textContent="Enter first and last name.";return}try{await callV9({action:"create",first_name:f,last_name:l,role:"employee",permissions:{time_clock:true,checklists:true,job_photos:true,chemicals_sds:true,report_issue:true,supply_request:true,policies:true}});m.textContent="Employee added. They can now use Create a PIN with their full name.";document.getElementById("newFirstV9").value="";document.getElementById("newLastV9").value="";loadEmpsV9()}catch(e){m.textContent=e.message}}
+function editEmpV9(id){const e=empsV9.find(x=>x.id===id);if(!e)return;editIdV9.value=e.id;editFirstV9.value=e.first_name||"";editLastV9.value=e.last_name||"";editRoleV9.value=e.role;pinV9.value="";document.querySelectorAll("#permsV9 [data-p]").forEach(c=>c.checked=e.permissions?.[c.dataset.p]!==false);editMsgV9.textContent="";employeeEditor.style.display="block"}
+async function saveEmpV9(){const f=editFirstV9.value.trim(),l=editLastV9.value.trim();if(!f||!l){editMsgV9.textContent="First and last name are required.";return}const permissions={};document.querySelectorAll("#permsV9 [data-p]").forEach(c=>permissions[c.dataset.p]=c.checked);try{await callV9({action:"update",id:editIdV9.value,first_name:f,last_name:l,role:editRoleV9.value,permissions});editMsgV9.textContent="Saved. Their PIN stays linked.";loadEmpsV9()}catch(e){editMsgV9.textContent=e.message}}
+async function resetPinEmpV9(){const pin=pinV9.value.replace(/\D/g,"");if(!/^\d{4,8}$/.test(pin)){editMsgV9.textContent="Enter a 4–8 digit PIN.";return}try{await callV9({action:"reset_pin",id:editIdV9.value,pin});pinV9.value="";editMsgV9.textContent="PIN updated."}catch(e){editMsgV9.textContent=e.message}}
+async function removeEmpV9(){const e=empsV9.find(x=>x.id===editIdV9.value);if(!e||!confirm(`Remove ${fullName(e)}? Their old punches and records will be kept.`))return;try{await callV9({action:"delete",id:e.id});employeeEditor.style.display="none";employeeMsgV9.textContent=`${fullName(e)} removed. Historical records kept.`;loadEmpsV9()}catch(x){editMsgV9.textContent=x.message}}
+addEmployeeV9.onclick=addEmpV9;closeEditV9.onclick=()=>employeeEditor.style.display="none";saveEditV9.onclick=saveEmpV9;resetPinV9.onclick=resetPinEmpV9;removeV9.onclick=removeEmpV9;loadEmpsV9();
+
+let punchRowsV10=[];
+function localInputV10(v){if(!v)return "";const d=new Date(v),pad=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`}
+async function openPunchV10(id){
+ const {data,error}=await lcs.from("time_entries").select("*").eq("id",id).single();
+ if(error){alert(error.message);return}
+ punchIdV10.value=data.id;punchEmployeeV10.textContent=nameOf(data.employee_id);clockInV10.value=localInputV10(data.clock_in);clockOutV10.value=localInputV10(data.clock_out);punchNoteV10.value=data.admin_note||"";punchMsgV10.textContent="";punchEditorV10.style.display="block";
+}
+async function savePunchEditV10(){
+ const ci=clockInV10.value,co=clockOutV10.value;
+ if(!ci){punchMsgV10.textContent="Clock-in time is required.";return}
+ if(co && new Date(co)<=new Date(ci)){punchMsgV10.textContent="Clock-out must be after clock-in.";return}
+ const patch={clock_in:new Date(ci).toISOString(),clock_out:co?new Date(co).toISOString():null,admin_note:punchNoteV10.value.trim()||null,edited:true,updated_at:new Date().toISOString()};
+ const {error}=await lcs.from("time_entries").update(patch).eq("id",punchIdV10.value);
+ if(error){punchMsgV10.textContent=error.message;return}
+ punchMsgV10.textContent="Punch updated.";await loadPunches();
+ if(typeof loadAdminYearCalendar==="function" && typeof adminCalendarLoaded!=="undefined" && adminCalendarLoaded)await loadAdminYearCalendar();
+ setTimeout(()=>punchEditorV10.style.display="none",350);
+}
+closePunchV10.onclick=()=>punchEditorV10.style.display="none";savePunchV10.onclick=savePunchEditV10;
 </script></body></html>
