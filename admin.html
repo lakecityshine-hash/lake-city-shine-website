@@ -4,7 +4,7 @@
 #employeeEditor .modal{max-width:520px;margin:4vh auto;background:white;border-radius:16px;padding:20px;color:#17344d}
 #employeeEditor label{display:block;font-weight:700;margin:10px 0 5px}#employeeEditor input,#employeeEditor select{width:100%;box-sizing:border-box;padding:11px}
 .perm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.perm-grid label{font-weight:500;display:flex;gap:6px;align-items:center}.perm-grid input{width:auto!important}.danger{background:#a92d2d!important}
-</style></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a>
+</style><link rel="stylesheet" href="schedule-calendar.css?v=16"></head><body><header><div class="brand">LAKE CITY <span>SHINE</span></div><h1>Owner / Admin</h1></header><main><a href="employee-portal.html">← Portal</a>
 <div class=card><div class="card" id="employeeManagementV9"><h2>Employees</h2>
 <p>Add employees, edit their information and access, reset their PIN, or remove them.</p>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="newFirstV9" placeholder="First name"><input id="newLastV9" placeholder="Last name"></div>
@@ -19,12 +19,7 @@
 <label><input type="checkbox" data-p="policies"> Policies</label></div>
 <button type="button" id="saveEditV9">Save Changes</button><hr><h3>Reset PIN</h3>
 <div style="display:flex;gap:8px"><input id="pinV9" inputmode="numeric" maxlength="8" placeholder="4–8 digit PIN"><button type="button" id="resetPinV9">Reset PIN</button></div>
-<hr><button type="button" class="danger" id="removeV9">Remove Employee</button><p>Old time punches and records will be kept.</p><div id="editMsgV9"></div></div></div><div class="card" id="scheduleAdminV12"><h2>Employee Schedules</h2><p>Add the arrival time each employee should see in their portal.</p>
-<label>Employee</label><select id="schedEmpV12"></select>
-<label>Date</label><input type="date" id="schedDateV12">
-<label>Arrival Time</label><input type="time" id="schedTimeV12">
-<button type="button" id="saveSchedV12" style="margin-top:10px">Add to Employee Schedule</button>
-<div id="schedMsgV12"></div><h3 style="margin-top:18px">Upcoming Schedules</h3><div id="schedListV12">Loading schedule…</div></div><details class="card" id="punchCalendarDetails">
+<hr><button type="button" class="danger" id="removeV9">Remove Employee</button><p>Old time punches and records will be kept.</p><div id="editMsgV9"></div></div></div><section class="card" id="shiftCalendar" data-admin="true"></section><details class="card" id="punchCalendarDetails">
 <summary style="cursor:pointer;font-size:1.35rem;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:12px">
 <span>Employee Punch Calendar</span><span>▼</span>
 </summary>
@@ -41,7 +36,7 @@
 <div class=card><h2>Completed Checklists</h2><div id=checklists>Loading…</div></div>
 <div class=card><h2>Job Photos</h2><div id=photos>Loading…</div></div>
 <div class=card><h2>Reported Problems</h2><div id=issues>Loading…</div></div>
-<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod15"></script><script>
+<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod16"></script><script>
 let session,elist=[];
 (async()=>{
  try{
@@ -163,30 +158,8 @@ async function savePunchEditV10(){
  if(typeof loadAdminYearCalendar==="function" && typeof adminCalendarLoaded!=="undefined" && adminCalendarLoaded)await loadAdminYearCalendar();
  setTimeout(()=>punchEditorV10.style.display="none",350);
 }
-closePunchV10.onclick=()=>punchEditorV10.style.display="none";savePunchV10.onclick=savePunchEditV10;
+if(document.getElementById("closePunchV10"))document.getElementById("closePunchV10").onclick=()=>punchEditorV10.style.display="none";if(document.getElementById("savePunchV10"))document.getElementById("savePunchV10").onclick=savePunchEditV10;
 
-async function loadScheduleAdminV12(){
- const sel=document.getElementById("schedEmpV12"),box=document.getElementById("schedListV12");if(!sel||!box)return;
- const active=(empsV9||[]).filter(e=>e.active&&e.role!=="admin");sel.innerHTML=active.map(e=>`<option value="${e.id}">${esc(fullName(e))}</option>`).join("");
- const now=new Date(),pad=n=>String(n).padStart(2,"0"),today=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
- if(!schedDateV12.value)schedDateV12.value=today;
- const {data,error}=await lcs.from("employee_schedule").select("id,employee_id,schedule_date,arrival_time").gte("schedule_date",today).order("schedule_date");
- if(error){box.textContent=error.message;return}
- box.innerHTML=data?.length?data.map(x=>{const e=(empsV9||[]).find(a=>a.id===x.employee_id),d=new Date(x.schedule_date+"T12:00:00"),[h,m]=x.arrival_time.split(":").map(Number),t=new Date(2000,0,1,h,m).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});return `<div class="emp-card"><b>${esc(e?fullName(e):"Employee")}</b><br>${d.toLocaleDateString([],{weekday:"short",month:"short",day:"numeric"})} · <b>${t}</b><br><button type="button" onclick="editSchedV14('${x.employee_id}','${x.schedule_date}','${x.arrival_time}')">Edit</button> <button type="button" onclick="deleteSchedV12('${x.id}')">Remove</button></div>`}).join(""):"<p>No upcoming arrival times.</p>";
-}
-function editSchedV14(employeeId,date,time){
- schedEmpV12.value=employeeId;schedDateV12.value=date;schedTimeV12.value=String(time||"").slice(0,5);
- schedMsgV12.textContent="Edit the arrival time, then tap Save.";
- saveSchedV12.textContent="Save Arrival Time";
- document.getElementById("scheduleAdminV12").scrollIntoView({behavior:"smooth",block:"start"});
-}
-async function saveScheduleV12(){
- if(!schedEmpV12.value||!schedDateV12.value||!schedTimeV12.value){schedMsgV12.textContent="Choose employee, date, and arrival time.";return}
- const {error}=await lcs.from("employee_schedule").upsert({employee_id:schedEmpV12.value,schedule_date:schedDateV12.value,arrival_time:schedTimeV12.value},{onConflict:"employee_id,schedule_date"});
- schedMsgV12.textContent=error?error.message:"Schedule saved. The employee can see it in My Schedule.";if(!error){saveSchedV12.textContent="Add to Employee Schedule";loadScheduleAdminV12();}
-}
-async function deleteSchedV12(id){const {error}=await lcs.from("employee_schedule").delete().eq("id",id);if(error)schedMsgV12.textContent=error.message;else loadScheduleAdminV12()}
-saveSchedV12.onclick=saveScheduleV12;
-const oldLoadEmpsV12=loadEmpsV9;loadEmpsV9=async function(){await oldLoadEmpsV12();await loadScheduleAdminV12()};
-setTimeout(loadScheduleAdminV12,0);
-</script></body></html>
+
+
+</script><script src="schedule-calendar.js?v=16"></script></body></html>
