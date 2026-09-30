@@ -13,7 +13,7 @@
 <div class=card><h2>Completed Checklists</h2><div id=checklists>Loading…</div></div>
 <div class=card><h2>Job Photos</h2><div id=photos>Loading…</div></div>
 <div class=card><h2>Reported Problems</h2><div id=issues>Loading…</div></div>
-<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod6"></script><script>
+<div class=card><h2>Supply / Equipment Requests</h2><div id=supplies>Loading…</div></div></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js?v=prod7"></script><script>
 let session,elist=[];(async()=>{const x=await me(true);session=x.session;await refreshAll()})();
 function nameOf(id){const e=elist.find(e=>e.id===id);return e?fullName(e):"Employee"}
 async function refreshAll(){await loadEmployees();await Promise.all([loadPunches(),loadChecklists(),loadPhotos(),loadIssues(),loadSupplies()])}
@@ -72,5 +72,6 @@ function showAdminDay(d,rows){
 }
 document.getElementById("adminPrevYear").addEventListener("click",()=>{adminCalendarYearValue--;loadAdminYearCalendar()});
 document.getElementById("adminNextYear").addEventListener("click",()=>{if(adminCalendarYearValue<new Date().getFullYear()){adminCalendarYearValue++;loadAdminYearCalendar()}});
-loadAdminYearCalendar();
+
+(async()=>{try{await loadAdminYearCalendar()}catch(e){const x=document.getElementById("adminYearCalendar");if(x)x.textContent=e?.message||"Calendar could not load."}})();
 </script></body></html>
