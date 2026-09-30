@@ -1,4 +1,59 @@
-<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Employee Login | Lake City Shine</title><link rel="stylesheet" href="portal.css"></head><body><div class="wrap"><div class="card"><h1>Employee Portal</h1><p class="muted">Select your name and enter your PIN.</p><select id="who"><option>Loading employees…</option></select><input id="pin" inputmode="numeric" pattern="[0-9]*" maxlength="8" type="password" placeholder="PIN"><button id="go">Sign In</button><p id="msg"></p><a class="muted" href="owner-setup.html">Owner setup</a></div></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-portal.js"></script><script>
-(async()=>{try{const x=await api({action:"names"});who.innerHTML='<option value="">Select your name</option>'+x.employees.map(e=>`<option value="${e.login_email||''}">${e.first_name} ${e.last_name||''}</option>`).join('')}catch(e){msg.textContent=e.message;msg.className="err"}})();
-go.onclick=async()=>{msg.textContent="";const email=who.value,p=pin.value.replace(/\D/g,"");if(!email||p.length<4){msg.textContent="Select your name and enter your PIN.";msg.className="err";return}try{const {error}=await lcs.auth.signInWithPassword({email,password:pinPassword(p)});if(error)throw error;location.href="employee-portal.html"}catch(e){msg.textContent="Name or PIN is incorrect.";msg.className="err"}};
+<!doctype html>
+<html><head><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Employee Portal | Lake City Shine</title><link rel="stylesheet" href="portal.css"></head>
+<body><div class="wrap">
+<div class="card">
+<h1>Employee Portal</h1>
+<p class="muted">Enter your PIN.</p>
+<input id="loginPin" inputmode="numeric" pattern="[0-9]*" maxlength="8" type="password" placeholder="PIN">
+<button id="signIn">Sign In</button><p id="loginMsg"></p>
+</div>
+<div class="card">
+<h2>Create a PIN</h2>
+<p class="muted">First time? Type your name and use the temporary PIN given to you by the administrator. Then create your own PIN.</p>
+<input id="createName" type="text" autocomplete="name" placeholder="First and last name">
+<input id="tempPin" inputmode="numeric" maxlength="8" type="password" placeholder="Temporary PIN">
+<input id="newPin" inputmode="numeric" maxlength="8" type="password" placeholder="Create PIN">
+<input id="confirmPin" inputmode="numeric" maxlength="8" type="password" placeholder="Confirm PIN">
+<button id="createBtn">Create My PIN</button><p id="createMsg"></p>
+<a class="muted" href="owner-setup.html">First-time Owner setup</a>
+</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-portal.js?v=final4"></script>
+<script>
+let directory=[];
+const norm=s=>String(s||"").trim().toLowerCase().replace(/\s+/g," ");
+const fullname=e=>norm(e.first_name+" "+(e.last_name||""));
+function findEmployee(name){const q=norm(name);return directory.find(e=>fullname(e)===q||norm(e.first_name)===q)}
+async function loadDirectory(){
+ try{const x=await api({action:"names"});directory=x.employees||[]}
+ catch(e){loginMsg.textContent="Portal connection error. Refresh and try again.";loginMsg.className="err"}
+}
+loadDirectory();
+
+signIn.onclick=async()=>{
+ const p=loginPin.value.replace(/\D/g,"");
+ if(p.length<4){loginMsg.textContent="Enter your PIN.";loginMsg.className="err";return}
+ loginMsg.textContent="Checking PIN…";loginMsg.className="muted";
+ for(const e of directory){
+  if(!e.login_email)continue;
+  const {data,error}=await lcs.auth.signInWithPassword({email:e.login_email,password:pinPassword(p)});
+  if(!error&&data.session){location.href="employee-portal.html";return}
+ }
+ loginMsg.textContent="PIN is incorrect.";loginMsg.className="err";
+};
+
+createBtn.onclick=async()=>{
+ const e=findEmployee(createName.value),old=tempPin.value.replace(/\D/g,""),np=newPin.value.replace(/\D/g,""),cp=confirmPin.value.replace(/\D/g,"");
+ if(!e){createMsg.textContent="Name not found. Ask the administrator to add you first.";createMsg.className="err";return}
+ if(old.length<4){createMsg.textContent="Enter your temporary PIN.";createMsg.className="err";return}
+ if(np.length<4||np.length>8||np!==cp){createMsg.textContent="Your new PIN must be 4–8 digits and both PINs must match.";createMsg.className="err";return}
+ try{
+  const {error}=await lcs.auth.signInWithPassword({email:e.login_email,password:pinPassword(old)});if(error)throw error;
+  const {error:uerr}=await lcs.auth.updateUser({password:pinPassword(np)});if(uerr)throw uerr;
+  await lcs.auth.signOut();
+  createMsg.textContent="PIN created. Use your new PIN above to sign in.";createMsg.className="ok";
+  tempPin.value=newPin.value=confirmPin.value="";
+ }catch(e){createMsg.textContent="Temporary PIN is incorrect.";createMsg.className="err"}
+};
 </script></body></html>
