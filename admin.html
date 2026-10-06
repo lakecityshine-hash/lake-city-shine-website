@@ -21,7 +21,8 @@
 <button type="button" id="saveEditV9">Save Changes</button><hr><h3>Reset PIN</h3>
 <div style="display:flex;gap:8px"><input id="pinV9" inputmode="numeric" maxlength="8" placeholder="4–8 digit PIN"><button type="button" id="resetPinV9">Reset PIN</button></div>
 <hr><button type="button" class="danger" id="removeV9">Remove Employee</button><p>Old time punches and records will be kept.</p><div id="editMsgV9"></div></div></div><section class="card" id="shiftCalendar" data-admin="true"></section>
-<h2>Time Punches</h2><div id=punches>Loading…</div></div>
+<h2>Time Punches &amp; Hours</h2><p>Wednesday–Tuesday • New week starts Wednesday at midnight. All times are Warsaw, Indiana time. Open punches are estimates. Pay estimates use $15/hour before deductions; overtime and payroll taxes are not included.</p><div class="emp-actions"><button type="button" onclick="changePunchWeek(-1)">← Previous Week</button><button type="button" onclick="changePunchWeek(0)">Current Week</button><button type="button" onclick="changePunchWeek(1)">Next Week →</button><button type="button" onclick="loadPunches()">Refresh</button></div><h3 id="punchWeekTitle"></h3><div id="punches" aria-live="polite">Loading…</div>
+<dialog id="punchEditorV10" style="max-width:480px;width:calc(100% - 48px);border:1px solid #cbdde5;border-radius:16px;padding:20px"><form id="punchFormV10"><h2>Edit Punch</h2><p id="punchEmployeeV10"></p><p>Warsaw, Indiana time</p><label for="clockInV10">Clock in</label><input id="clockInV10" type="datetime-local" step="1" required style="width:100%;box-sizing:border-box"><label for="clockOutV10">Clock out (leave blank if still clocked in)</label><input id="clockOutV10" type="datetime-local" step="1" style="width:100%;box-sizing:border-box"><label for="punchNoteV10">Admin note</label><textarea id="punchNoteV10" style="width:100%;box-sizing:border-box" maxlength="2000"></textarea><p id="punchMsgV10" role="status"></p><div class="emp-actions"><button type="submit" id="savePunchV10">Save Changes</button><button type="button" id="closePunchV10">Cancel</button></div></form></dialog></div>
 <div class=card><h2>Completed Checklists</h2><div id=checklists>Loading…</div></div>
 <div class=card><h2>Job Photos</h2><div id=photos>Loading…</div></div>
 <div class=card><h2>Reported Problems</h2><div id=issues>Loading…</div></div>
@@ -54,7 +55,44 @@ async function loadEmployees(){const x=await api({action:"list"},session.access_
 async function addEmployee(){try{await api({action:"create",first_name:first.value,last_name:last.value,role:role.value,permissions:{time_clock:true,checklists:true,chemicals_sds:true,job_photos:true,report_issue:true,supply_request:true,policies:true}},session.access_token);first.value=last.value="";await loadEmployees()}catch(e){alert(e.message)}}
 async function toggleEmployee(id,active){try{await api({action:"update",id,active},session.access_token);await loadEmployees()}catch(e){alert(e.message)}}
 async function resetPin(id){const p=prompt("Enter a new 4–8 digit PIN.");if(!/^\d{4,8}$/.test(p||""))return alert("PIN must be 4–8 digits.");try{await api({action:"password",id,password:pinPassword(p)},session.access_token);alert("PIN reset.")}catch(e){alert(e.message)}}
-async function loadPunches(){try{const {data,error}=await lcs.from("time_entries").select("*").order("clock_in",{ascending:false}).limit(200);document.getElementById("punches").innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))}</b><br>${fmt(x.clock_in)} → ${x.clock_out?fmt(x.clock_out):"<b>Still clocked in</b>"}${x.edited?" • Edited":""}<br><button type="button" onclick="openPunchV10('${x.id}')">Edit Punch</button></div>`).join("")||"<p>No punches yet.</p>"}catch(e){document.getElementById("punches").textContent=e.message||"Could not load time punches."}}
+const punchZone='America/Indiana/Indianapolis';
+const punchParts=new Intl.DateTimeFormat('en-CA',{timeZone:punchZone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
+function punchLocal(value){const p=Object.fromEntries(punchParts.formatToParts(new Date(value)).map(x=>[x.type,x.value]));return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}:${p.second}`}
+function punchInstant(value){
+ const wall=Date.parse(value+'Z');if(!Number.isFinite(wall))throw Error('Enter a valid date and time.');
+ let guess=wall;for(let i=0;i<4;i++){const delta=wall-Date.parse(punchLocal(guess)+'Z');if(!delta)break;guess+=delta}
+ if(punchLocal(guess)!==(value.length===16?value+':00':value))throw Error('This local time does not exist because of daylight saving time. Choose another time.');
+ return new Date(guess);
+}
+function punchAddDay(day,n){const d=new Date(day+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
+function punchWeek(day){const back=(new Date(day+'T12:00:00Z').getUTCDay()+4)%7;return punchAddDay(day,-back)}
+function punchDateLabel(day){return new Date(day+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric',year:'numeric'})}
+function punchTime(value){return new Date(value).toLocaleString('en-US',{timeZone:punchZone,month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+function punchPay(ms){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(ms/3600000*15)}
+function punchHours(ms){const minutes=Math.round(ms/60000);return `${Math.floor(minutes/60)}h ${minutes%60}m (${(ms/3600000).toFixed(2)} hrs)`}
+let punchWeekStart=punchWeek(punchLocal(new Date()).slice(0,10)),punchLoadVersion=0;
+function changePunchWeek(direction){punchWeekStart=direction?punchAddDay(punchWeekStart,7*direction):punchWeek(punchLocal(new Date()).slice(0,10));loadPunches()}
+function groupPunchDays(rows,start,end,now=new Date()){
+ const days=new Map();
+ for(const row of rows){const ci=new Date(row.clock_in),co=row.clock_out?new Date(row.clock_out):now;if(!Number.isFinite(+ci)||!Number.isFinite(+co)||co<ci)continue;
+  let at=Math.max(+ci,+start),stop=Math.min(+co,+end);if(at>=stop)continue;
+  while(at<stop){const day=punchLocal(at).slice(0,10),until=Math.min(stop,+punchInstant(punchAddDay(day,1)+'T00:00:00')),key=day+'|'+row.employee_id;
+   if(!days.has(key))days.set(key,{day,employee:row.employee_id,ms:0,open:false,rows:[]});const d=days.get(key);d.ms+=until-at;d.open=d.open||!row.clock_out;d.rows.push({row,ms:until-at});at=until;
+  }
+ }
+ return [...days.values()].sort((a,b)=>a.day.localeCompare(b.day)||nameOf(a.employee).localeCompare(nameOf(b.employee)));
+}
+async function loadPunches(){
+ const request=++punchLoadVersion,box=document.getElementById('punches'),start=punchInstant(punchWeekStart+'T00:00:00'),end=punchInstant(punchAddDay(punchWeekStart,7)+'T00:00:00');
+ document.getElementById('punchWeekTitle').textContent=punchDateLabel(punchWeekStart)+' – '+punchDateLabel(punchAddDay(punchWeekStart,6));box.textContent='Loading punches…';
+ try{
+  const rows=[];for(let offset=0;;){const {data,error}=await lcs.from('time_entries').select('*').lt('clock_in',end.toISOString()).or(`clock_out.is.null,clock_out.gt.${start.toISOString()}`).order('clock_in').order('id').range(offset,offset+499);if(error)throw error;if(request!==punchLoadVersion)return;rows.push(...(data||[]));if(!data?.length)break;offset+=data.length}
+  const days=groupPunchDays(rows,start,end),totals=new Map();
+  for(const d of days){const t=totals.get(d.employee)||{ms:0,open:false};t.ms+=d.ms;t.open=t.open||d.open;totals.set(d.employee,t)}
+  box.innerHTML=days.length?'<h3>Weekly totals by employee</h3>'+[...totals].map(([id,t])=>`<p><b>${esc(nameOf(id))}:</b> ${punchHours(t.ms)} — <b>Estimated pay: ${punchPay(t.ms)}</b>${t.open?' • Includes open punch estimate':''}</p>`).join('')+days.map(d=>`<section class="emp-card"><h3>${punchDateLabel(d.day)}</h3><b>${esc(nameOf(d.employee))} — Daily total: ${punchHours(d.ms)}</b><p><b>Estimated pay: ${punchPay(d.ms)}</b> at $15/hour</p>${d.open?'<p>Includes open punch estimate</p>':''}${d.rows.map(({row:r,ms})=>`<div class="row">${punchTime(r.clock_in)} → ${r.clock_out?punchTime(r.clock_out):'<b>Still clocked in</b>'}<br><b>${punchHours(ms)} on this day • ${punchPay(ms)}</b>${r.edited?' • Edited':''}<br><button type="button" data-edit-punch="${esc(r.id)}">Edit Punch</button></div>`).join('')}</section>`).join(''):'<p>No time punches this week.</p>';
+  box.querySelectorAll('[data-edit-punch]').forEach(b=>b.onclick=()=>openPunchV10(b.dataset.editPunch));
+ }catch(e){if(request===punchLoadVersion)box.textContent=e.message||'Could not load punches. Tap Refresh to retry.'}
+}
 async function loadChecklists(){try{const {data,error}=await lcs.from("checklist_sessions").select("id,employee_id,job_reference,started_at,completed_at,employee_notes,checklist_templates(name),checklist_responses(completed,checklist_items(item_text))").order("started_at",{ascending:false}).limit(100);document.getElementById("checklists").innerHTML=error?esc(error.message):(data||[]).map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.checklist_templates?.name||"Checklist")}</b><br>${esc(x.job_reference||"No job entered")}<br><small>${fmt(x.completed_at||x.started_at)}</small><br>${(x.checklist_responses||[]).filter(r=>r.completed).length}/${(x.checklist_responses||[]).length} tasks completed${x.employee_notes?`<p>${esc(x.employee_notes)}</p>`:""}</div>`).join("")||"<p>No completed checklists yet.</p>"}catch(e){document.getElementById("checklists").textContent=e.message||"Could not load completed checklists."}}
 async function loadPhotos(){const {data,error}=await lcs.from("job_photos").select("*,job_photo_groups(property_address,unit_number,service_type,notes)").order("uploaded_at",{ascending:false}).limit(100);if(error)return document.getElementById("photos").innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("job-photos",x.storage_path)})));document.getElementById("photos").innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_photo_groups?.property_address||"")} ${x.job_photo_groups?.unit_number?"• Unit "+esc(x.job_photo_groups.unit_number):""}<br>${esc(x.job_photo_groups?.service_type||"")}<br><small>${fmt(x.uploaded_at)}</small>${x.caption?`<p>${esc(x.caption)}</p>`:""}${x.url?`<img class=thumb src="${x.url}">`:""}</div>`).join("")||"<p>No job photos yet.</p>"}
 async function loadIssues(){const {data,error}=await lcs.from("issue_reports").select("*").order("created_at",{ascending:false}).limit(100);if(error)return document.getElementById("issues").innerHTML=esc(error.message);const rows=await Promise.all((data||[]).map(async x=>({...x,url:await signed("issue-photos",x.photo_storage_path)})));document.getElementById("issues").innerHTML=rows.map(x=>`<div class=row><b>${esc(nameOf(x.employee_id))} — ${esc(x.category)}</b><br>${esc(x.job_reference||"")}<br><small>${fmt(x.created_at)}</small><p>${esc(x.description)}</p>${x.url?`<img class=thumb src="${x.url}">`:""}<label>Status</label><select onchange="issueStatus('${x.id}',this.value)"><option value=open ${x.status==="open"?"selected":""}>Open</option><option value=reviewing ${x.status==="reviewing"?"selected":""}>Reviewing</option><option value=resolved ${x.status==="resolved"?"selected":""}>Completed</option></select>${x.status!=="resolved"?` <button type="button" onclick="issueStatus(\'${x.id}\',\'resolved\')">Mark Completed</button>`:` <b>✓ Completed</b>`}</div>`).join("")||"<p>No reported problems yet.</p>"}
@@ -73,27 +111,32 @@ async function resetPinEmpV9(){const pin=pinV9.value.replace(/\D/g,"");if(!/^\d{
 async function removeEmpV9(){const e=empsV9.find(x=>x.id===editIdV9.value);if(!e||!confirm(`Remove ${fullName(e)}? Their old punches and records will be kept.`))return;try{await callV9({action:"delete",id:e.id});employeeEditor.style.display="none";employeeMsgV9.textContent=`${fullName(e)} removed. Historical records kept.`;loadEmpsV9()}catch(x){editMsgV9.textContent=x.message}}
 addEmployeeV9.onclick=addEmpV9;closeEditV9.onclick=()=>employeeEditor.style.display="none";saveEditV9.onclick=saveEmpV9;resetPinV9.onclick=resetPinEmpV9;removeV9.onclick=removeEmpV9;loadEmpsV9();
 
-let punchRowsV10=[];
-function localInputV10(v){if(!v)return "";const d=new Date(v),pad=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`}
+let editingPunch=null,punchSaving=false;
+const punchField=id=>document.getElementById(id);
 async function openPunchV10(id){
- const {data,error}=await lcs.from("time_entries").select("*").eq("id",id).single();
- if(error){alert(error.message);return}
- punchIdV10.value=data.id;punchEmployeeV10.textContent=nameOf(data.employee_id);clockInV10.value=localInputV10(data.clock_in);clockOutV10.value=localInputV10(data.clock_out);punchNoteV10.value=data.admin_note||"";punchMsgV10.textContent="";punchEditorV10.style.display="block";
+ try{await me(true);const {data,error}=await lcs.from('time_entries').select('*').eq('id',id).single();if(error)throw error;
+ editingPunch=data;punchField('punchEmployeeV10').textContent=nameOf(data.employee_id);punchField('clockInV10').value=punchLocal(data.clock_in);punchField('clockOutV10').value=data.clock_out?punchLocal(data.clock_out):'';punchField('punchNoteV10').value=data.admin_note||'';punchField('punchMsgV10').textContent='';punchField('punchEditorV10').showModal();
+ }catch(e){alert(e.message||'Could not open punch.')}
 }
-async function savePunchEditV10(){
- const ci=clockInV10.value,co=clockOutV10.value;
- if(!ci){punchMsgV10.textContent="Clock-in time is required.";return}
- if(co && new Date(co)<=new Date(ci)){punchMsgV10.textContent="Clock-out must be after clock-in.";return}
- const patch={clock_in:new Date(ci).toISOString(),clock_out:co?new Date(co).toISOString():null,admin_note:punchNoteV10.value.trim()||null,edited:true,updated_at:new Date().toISOString()};
- const {error}=await lcs.from("time_entries").update(patch).eq("id",punchIdV10.value);
- if(error){punchMsgV10.textContent=error.message;return}
- punchMsgV10.textContent="Punch updated.";await loadPunches();
- if(typeof loadAdminYearCalendar==="function" && typeof adminCalendarLoaded!=="undefined" && adminCalendarLoaded)await loadAdminYearCalendar();
- setTimeout(()=>punchEditorV10.style.display="none",350);
+async function savePunchEditV10(event){
+ event.preventDefault();if(punchSaving||!editingPunch)return;
+ try{
+  const ci=punchInstant(punchField('clockInV10').value),out=punchField('clockOutV10').value,co=out?punchInstant(out):null;
+  if(co&&co<=ci)throw Error('Clock-out must be after clock-in.');
+  if(ci>new Date()||(co&&co>new Date()))throw Error('Time punches cannot be in the future.');
+  punchSaving=true;punchField('savePunchV10').disabled=true;punchField('closePunchV10').disabled=true;punchField('punchMsgV10').textContent='Saving…';await me(true);
+  const patch={clock_in:ci.toISOString(),clock_out:co?co.toISOString():null,admin_note:punchField('punchNoteV10').value.trim()||null,edited:true,updated_at:new Date().toISOString()};
+  let query=lcs.from('time_entries').update(patch).eq('id',editingPunch.id).eq('clock_in',editingPunch.clock_in);
+  query=editingPunch.clock_out?query.eq('clock_out',editingPunch.clock_out):query.is('clock_out',null);
+  query=editingPunch.updated_at?query.eq('updated_at',editingPunch.updated_at):query.is('updated_at',null);
+  const {data,error}=await query.select('id');if(error)throw error;if(data?.length!==1)throw Error('This punch changed or could not be saved. Cancel, refresh, and reopen it.');
+  punchField('punchEditorV10').close();editingPunch=null;await loadPunches();
+ }catch(e){punchField('punchMsgV10').textContent=e.message||'Could not save punch.'}
+ finally{punchSaving=false;punchField('savePunchV10').disabled=false;punchField('closePunchV10').disabled=false}
 }
-if(document.getElementById("closePunchV10"))document.getElementById("closePunchV10").onclick=()=>punchEditorV10.style.display="none";if(document.getElementById("savePunchV10"))document.getElementById("savePunchV10").onclick=savePunchEditV10;
-
-
+punchField('punchFormV10').onsubmit=savePunchEditV10;
+punchField('closePunchV10').onclick=()=>punchField('punchEditorV10').close();
+punchField('punchEditorV10').addEventListener('cancel',e=>{if(punchSaving)e.preventDefault()});
 
 </script><script>(()=>{
 'use strict';
