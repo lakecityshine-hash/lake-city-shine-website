@@ -1,0 +1,15 @@
+LAKE CITY SHINE — WEBSITE & SEO UPDATE
+Not published. Upload these files yourself when ready.
+
+1. Back up your current website files.
+2. Extract this ZIP. Upload the 13 HTML pages, modern.css, assets folder, robots.txt and sitemap.xml to the same website folder, replacing matching filenames. Upload the new .webp images too; the HTML and CSS now refer to them.
+3. Keep existing employee portal files, CNAME/domain settings and other hosting configuration. Do not delete your repository or replace the entire repository with only this package.
+4. After upload, check Home, the mobile menu and Contact. Send a clearly labeled test quote and confirm its arrival at lakecityshine@gmail.com.
+5. Check GA4 Realtime for measurement ID G-4B62T41B7M. Tracking runs only on lakecityshine.com and www.lakecityshine.com, not in local preview files. Page views and contact/quote clicks are tracked; confirmed form delivery is not tracked as a conversion.
+6. Submit or recheck https://lakecityshine.com/sitemap.xml in Search Console after uploading.
+
+Open index.html from the extracted folder to browse the connected local pages. Standalone preview HTML files are viewing files only; upload the original named pages from this ZIP.
+
+The form still submits to https://formsubmit.co/lakecityshine@gmail.com using POST. Submitting is a real request. Inbox delivery, GA4 receipt and full browser/mobile rendering were not tested here.
+
+See REVIEW-NOTES.txt and SEO-KEYWORDS.txt for completed work. PHOTO-CREDITS.txt lists illustrative stock sources. No deployment, repository push or Search Console account changes were performed.

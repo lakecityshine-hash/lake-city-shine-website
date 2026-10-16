@@ -1,0 +1,32 @@
+15 ADDITIONAL CLEANING COMPANY WEBSITES — October 15, 2026
+Review of public page content and information structure, not hands-on booking or device testing. Maid Brigade's Connecticut page was used because the main site blocked retrieval. No competitor copy or proprietary process is reproduced in the website.
+
+Company | Observed feature | Opportunity for Lake City Shine
+The Maids — https://www.maids.com/ | Plan comparisons and a defined cleaning process | Expand the existing comparison with an accurate room checklist.
+The Cleaning Authority — https://www.thecleaningauthority.com/ | Recurring detail-clean rotation explained | Explain weekly, every-two-week and monthly upkeep without promising an unestablished rotation system.
+MaidPro — https://www.maidpro.com/ | 49-point checklist and customer priorities | Provide Lake City Shine's own service checklist and highlight customer priorities.
+Maid Brigade — https://maidbrigade.com/ct/ | Distinct recurring frequency pages, branded team photos | Clear recurring options and an authentic owner/team introduction.
+Two Maids — https://www.twomaidscleaning.com/ | Prominent booking and price calculation actions | Keep a consistent, easy-to-find quote action; explain price factors before considering an estimator.
+You've Got Maids — https://www.youvegotmaids.com/house-cleaning/ | Detailed room tasks and guarantee terms | Make inclusions and the existing guarantee easier to scan.
+Stanley Steemer — https://www.stanleysteemer.com/cleaning-quote-pricing | Separate home/business quote routes | Maintain service-first inquiries with only relevant property questions.
+COIT — https://www.coit.com/ | Specialist service explanations and scheduling actions | Give carpet/upholstery services a dedicated destination if these are a growth priority.
+Zerorez — https://www.zerorez.com/ | Labeled before-and-after examples | Add real matched-angle before/after pairs when available; never use stock as proof of work.
+Coverall — https://www.coverall.com/ | Described cleaning methods and facility FAQs | Explain actual methods and answer commercial buyers' questions on relevant pages.
+Anago — https://anagocleaning.com/ | Industry-specific sections and customer communication | Explain direct contact with Cole and how clients raise concerns; no invented response-time promise.
+Stratus Building Solutions — https://www.stratusclean.com/ | Clear tailored proposal process | Describe what is confirmed in a commercial quote, including scope and access.
+Jani-King — https://www.janiking.com/office-cleaning-checklist/ | Downloadable office checklist | Offer original residential and commercial scope/checklist downloads.
+Vanguard Cleaning Systems — https://www.vanguardcleaning.com/ | Facility-specific schedules | Show how recurring office and common-area cleaning fit customer schedules.
+ecomaids — https://ecomaids.com/ | Focused eco-friendly positioning | Strengthen Lake City Shine's honest specialty: move-in/out and unit turns. Do not copy eco/certification claims.
+
+PRIORITY RECOMMENDATIONS (not yet implemented)
+1. Service-specific expandable checklists and concise preparation guidance.
+2. Dedicated recurring-cleaning section explaining weekly, every-two-week and monthly options.
+3. Genuine before/after pairs and permission-cleared project stories; existing gallery alone is not a matched before/after case study.
+4. Four useful FAQs on each major service page rather than sending every visitor to the general FAQ.
+5. A pricing-explainer block covering size, condition, scope, access and travel; no invented prices or instant calculator yet.
+6. Clear navigation to all services, including exterior/window work; keep one primary quote action per screen.
+7. Authentic owner/team photography and a concise specialty statement.
+8. Final browser/device QA for menu, form, keyboard use, contrast, loading and layout. Offline checks alone do not prove rendering or inbox delivery.
+
+QUOTE-FORM FIX IN THIS PACKAGE
+The optional-details disclosure is visible even before service selection. The native service selector is explicitly styled with its normal arrow. Only the matching questions show and submit; other service questions are disabled. The form retains POST https://formsubmit.co/lakecityshine@gmail.com. Real inbox delivery was not tested and nothing was published.

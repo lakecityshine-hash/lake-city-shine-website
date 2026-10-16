@@ -1,0 +1,66 @@
+WEBSITE REVIEW — OCTOBER 15, 2026
+
+Reviewed all 13 public pages and the visible wording, titles, descriptions, image assignments, navigation and quote form.
+
+FIXED
+- Replaced the broken email-protection placeholder with a direct clickable lakecityshine@gmail.com address.
+- Removed repeated content photos on the same page, including the residential image stored under two filenames. Added distinct stock photos and separate decorative backgrounds. Header/footer branding logos intentionally repeat.
+- Replaced misleading image descriptions with descriptions of the actual scenes.
+- Corrected post-construction quote links to select the construction form option. Primary service buttons preselect matching existing form choices.
+- Made the mobile menu control a keyboard-operable button; submenu links remain visible inside the expanded mobile menu.
+- Added window and exterior cleaning links to every footer.
+- Corrected the Google link label: it leads to leaving a review, not reading reviews.
+- Improved service titles and headings, retained unique descriptions, and clarified local versus extended service areas. Broad Northern Indiana coverage remains for move-in/out, apartment turnovers, commercial and post-construction work.
+- Added a direct quote-form link and more precise service-area wording to FAQs.
+
+CHECKS PASSED
+- 492 anchor links checked for targets, fragments, phone/text/email formats and service parameters.
+- All 13 current public-page URLs returned HTTP 200. Employee portal, Google review destination and FormSubmit endpoint also responded successfully. Google may require sign-in.
+- 89 image placements resolve to readable files with alt text. Content/background image references and file contents do not repeat on the same page; branding logos excluded. Photo contact sheets were visually inspected for relevance.
+- Each page has one H1, a unique title, a unique description and a canonical URL.
+- Local CSS image references resolve. Inline JavaScript passed syntax checks.
+- The quote form now has four required fields, with optional expandable property details. Destination: https://formsubmit.co/lakecityshine@gmail.com, method POST.
+- Form logic tests passed for all 10 services, empty selection, URL preselection, inactive fields disabled, smoking details and move-out follow-ups.
+
+LIMITS
+No full browser rendering, mobile-device interaction, real form submission or inbox receipt test was performed. HTTP 200 confirms an endpoint responds; it does not confirm email delivery or portal login. Changes are preview files and have not been published.
+
+SEO reference: https://developers.google.com/search/docs/appearance/title-link
+Image SEO reference: https://developers.google.com/search/docs/appearance/google-images
+Stock image sources are recorded in PHOTO-CREDITS.txt.
+
+FOLLOW-UP PHOTO CORRECTION
+Construction Dust & Surfaces now shows a duster cleaning a paneled wall. Window Cleaning and Exterior Cleaning have distinct image sets, including decorative backgrounds. No photos are shared between those two pages, excluding branding logos. No publication performed.
+
+EXTERIOR PHOTO REFRESH
+Exterior and Window Cleaning pages now use people-free property, window and patio imagery. Replaced the worker photos, exterior card images and exterior hero. Form and page wording unchanged.
+
+Patios card now shows paving and outdoor chairs. Exterior-glass card on Window Cleaning now shows ground-level storefront windows, replacing upper-story windows.
+
+TECHNICAL SEO AND KEYWORD UPDATE
+Added Organization, WebPage and service-specific Service structured data with verified business contact details. No invented street address, business hours, review ratings or prices. Added matching social-sharing metadata and page language.
+Added Google Analytics G-4B62T41B7M once on all 13 pages, guarded to run only on the production domain. Tracks page views, phone/text/email clicks and quote-button clicks. No form field values are sent and completed lead delivery is not claimed. Preview gating and event queueing passed offline tests; live GA receipt remains to be checked after upload.
+Included current live robots.txt and sitemap.xml after verifying sitemap URLs match all 13 page canonicals.
+Converted photos to optimized WebP, reducing total photo bytes by 66.1 percent in the conversion set. Images retain their placement. Upload package contains only referenced images, with originals retained outside the deliverable. Added image dimensions, async decoding and lazy loading to content images.
+Naturally integrated service keywords into headings and descriptions on 10 pages, preserving accurate local and Northern Indiana coverage. Metadata and structured-data descriptions match. See SEO-KEYWORDS.txt.
+The submission endpoint and all original named fields are preserved. JSON parses, JavaScript syntax, local asset references, image readability, page titles and internal links passed checks. No publication performed.
+
+PHOTO AND MOBILE POLISH
+Standardized service and add-on photo frames to 16:10, retaining focal positioning and full lime outlines. Equipment images fit inside the same frame without cropping. Standardized photo-card text padding.
+Reduced mobile header to about 124px, expanded mobile-menu breakpoint to 1100px, added viewport-height scrolling, 44px menu targets, Escape/outside-click closing and updated accessible labels. Improved narrow-screen heading wrapping, full-width calls to action, single-column cards and form fields, and 16px form text.
+Browser/device rendering remains untested because browser QA is unavailable; code and menu state checks were used. Form logic and submission destination unchanged. No publishing.
+
+COMPETITOR REVIEW IMPROVEMENTS
+Added a standard/recurring vs deep vs move-in/out comparison to the three relevant pages. Added a three-step inquiry and cleaning process to eight pages. Moved authentic homepage testimonials higher and reused relevant customer feedback on residential, deep and move-in/out pages.
+Added office, storefront, property-manager and contractor sections, with scope, scheduling and vendor-documentation guidance on commercial, turnover and post-construction pages. Added a home-page gallery of existing real cleaning photos without invented project dates, client identities or results.
+Simplified the initial inquiry to required name, email, city and service. Phone and detailed questions are optional; all original named fields and the existing FormSubmit POST destination are retained. All ten service choices, empty state, preselection and conditional follow-ups pass offline logic checks. No real message was submitted.
+No browser/device rendering test was available. Nothing has been published.
+
+FOOTER AND QUOTE FOLLOW-UP
+All 13 footer logos have explicit natural 2:1 proportions and automatic height. Service choice is the first visible quote field. Optional details stay hidden until a service is selected; only the matching question group is shown and enabled, with a service-specific dropdown label. Other groups are hidden in initial HTML as well as by the script. Offline service-state checks passed. No publication or real form submission.
+
+SELECTED FOLLOW-UP ONLY
+Added weekly, every-two-week and monthly recurring options to home/residential pages. No homeowner or service checklist added, per final preference. Added two or three contextual FAQs to each non-FAQ page. No service-scope checklist or other unselected competitor recommendation added. Quote form markup and email POST destination unchanged.
+
+BACKGROUND BUSINESS IDENTITY UPDATE
+Added sameAs references for the Google Maps listing identified by the existing review link's resolved Place ID, and verified Facebook, Thumbtack and Nextdoor business profiles. Added business-name variants, contact-point data and WebSite/WebPage relationships. All 13 pages have identical visible body content and identical non-schema source before and after this update. Form routing, CSS, scripts and navigation are unchanged. No Google/Facebook account settings were edited; nothing published.

@@ -1,0 +1,9 @@
+UPLOAD TO GITHUB PAGES
+
+Upload all HTML files, modern.css, robots.txt, sitemap.xml and all .webp/.png/.jpg image files to the SAME repository root folder. No assets folder is needed.
+
+Do not upload the ZIP file itself. Extract it first. GitHub Pages is case-sensitive. Keep the image filenames unchanged.
+
+After GitHub Pages finishes deploying, refresh your browser. On iPhone, use a private tab if old files remain cached.
+
+The website reference .txt files are optional.

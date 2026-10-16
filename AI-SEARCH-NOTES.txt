@@ -1,0 +1,16 @@
+AI SEARCH DISCOVERY — October 15, 2026
+
+Updated robots.txt to explicitly permit OAI-SearchBot, Claude-SearchBot, PerplexityBot, Googlebot and Bingbot. Existing wildcard permission is preserved; these bots were already allowed by it. This is explicit configuration, not a new ranking advantage or a submission to an AI engine.
+
+Verified the sitemap contains all 13 public pages and each is allowed for these agents. Existing business/service structured data, identity profile links and readable HTML remain in place. All page files, visible content, styles and form behavior are unchanged.
+
+No promise of permanent model memory, ranking, citation or recommendation. Search crawling is separate from model training. No live account changes, engine submissions, scheduled jobs or deployment occurred. Upload the package to activate its files. Server/WAF restrictions and actual indexing remain unverified.
+
+After upload: verify the live robots.txt and sitemap, and use Google Search Console and Bing Webmaster Tools to inspect indexing and submit the sitemap if needed. IndexNow requires a hosted ownership key and a submission after publication; no unhosted-key submission was attempted.
+
+Official guidance:
+https://developers.openai.com/api/docs/bots
+https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler
+https://docs.perplexity.ai/docs/resources/perplexity-crawlers
+https://developers.google.com/search/docs/appearance/ai-features
+https://www.bing.com/indexnow
