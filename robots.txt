@@ -1,10 +1,20 @@
-# Public website crawl access. These rules permit access; they do not guarantee indexing.
-# Existing general crawler permissions are retained.
+# Allow major search and AI search crawlers to access the public site.
 User-agent: *
 Allow: /
 
-# Search discovery crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
 Allow: /
 
 User-agent: Claude-SearchBot
@@ -13,10 +23,8 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
+User-agent: Applebot
 Allow: /
 
 Sitemap: https://lakecityshine.com/sitemap.xml
+
