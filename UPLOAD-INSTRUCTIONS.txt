@@ -1,9 +1,55 @@
-UPLOAD TO GITHUB PAGES
+LAKE CITY SHINE — CHECKED PUBLIC WEBSITE UPLOAD
 
-Upload all HTML files, modern.css, robots.txt, sitemap.xml and all .webp/.png/.jpg image files to the SAME repository root folder. No assets folder is needed.
+Upload all contents of this folder into the MAIN website folder. Replace matching files and keep the post-construction-assets folder intact. This package contains all 13 public pages and every locally referenced public photo, background, logo and stylesheet.
 
-Do not upload the ZIP file itself. Extract it first. GitHub Pages is case-sensitive. Keep the image filenames unchanged.
+Keep your existing employee login/admin files and any other files not included here. They are outside this public-page update.
 
-After GitHub Pages finishes deploying, refresh your browser. On iPhone, use a private tab if old files remain cached.
+INCLUDED
+- All prior SEO, fine-print, Google/Facebook link, review, background and carpet-service updates.
+- Current repository quote form used as the baseline, with the email destination preserved: lakecityshine@gmail.com through FormSubmit.
+- A standalone Professional Carpet Cleaning / Upholstery service choice.
+- Professional carpet cleaning add-ons for residential, move-in/out, commercial and turnover cleaning, showing the carpet questions when selected.
+- A required residential/commercial property question, with a Not sure / mixed-use option.
+- Direct carpet-quote links on the residential, move-in/out and commercial carpet cards.
+- Corrected quote-click analytics for the current contact-page addresses.
 
-The website reference .txt files are optional.
+CHECKED
+All internal public-page/anchor links, referenced asset files and image decoding; JSON-LD and sitemap; mobile menu opening/closing; commercial review expansion; service preselection; all 10 quote service panels; required-field validation; add-on data; hidden question exclusion; form email destination; ZIP integrity. Interaction checks used a local DOM runtime, not a visual browser rendering of this new package.
+
+AFTER UPLOAD
+Open the home, commercial, residential, move-in/out and contact pages. Confirm the logo and photos display. Select carpet cleaning, then try a cleaning service plus its carpet add-on. Confirm property type is requested.
+
+Send one clearly labeled test quote and check that the email arrives. No quote request was submitted during these checks, so FormSubmit activation and email delivery have not been confirmed. We did not change your recipient or activation settings. Facebook may restrict automated viewing; the link retains the Page address already listed on your website. Employee sign-in/authentication is not tested by this package.
+
+Submit https://lakecityshine.com/sitemap.xml in your webmaster tools after uploading. This file does not publish the site or submit it to search engines automatically.
+
+THREE-PASS SEO CHECK
+Checked all 13 pages for unique titles and descriptions, aligned social metadata and page URLs, index/follow settings, crawler permissions, business and service structured data, real service anchors, photo alt text and files, visible fine-print descriptions, and sitemap consistency. Updated carpet-cleaning descriptions on the home, residential, move-in/out and contact pages. No appearance or quote-form changes were introduced in this SEO pass.
+Google Search Console indexing and ranking, Google rich-result eligibility and the old duplicate Business Profile still require separate checks. No webmaster submission, duplicate merge, or deployment was performed.
+
+COMPANY AND GOOGLE PROFILE ASSOCIATION
+Every public page uses one consistent business identity, with matching company/legal name, phone, email, logo, website and profile links. An explicit hasMap reference and the sameAs Google reference both point to the current reviewed Google profile. Web pages and cleaning services refer to that same business identity. No street address or invented map coordinates have been added. This association helps identify the business; Google still determines indexing and ranking.
+
+MULTI-ENGINE DISCOVERY ADDITIONS
+The existing sitemap now includes image entries tied to the pages where those photos appear, using Google's supported image sitemap extension. Page URLs remain valid standard sitemap entries for other engines. Images and visible page layouts are unchanged.
+
+IndexNow preparation: upload indexnow-key.txt in the MAIN website folder with the other files. It must be publicly readable at https://lakecityshine.com/indexnow-key.txt. Once the new files are actually live, the 13 updated page URLs can be submitted to the official IndexNow endpoint. A notification to one participant is shared with other participating engines. No IndexNow notification has been sent yet, and adding a key file alone does not notify them or guarantee indexing.
+
+Bing indexing can also support platforms that use Bing results. DuckDuckGo says most traditional links come from Bing; Yahoo directs site submissions through Bing. This does not mean those products, Google, Grok, ChatGPT or every AI engine accept IndexNow directly. Existing crawler access remains permitted. AI citations, rankings and traffic are not guaranteed.
+
+Official references:
+https://www.indexnow.org/documentation
+https://www.indexnow.org/faq
+https://duckduckgo.com/duckduckgo-help-pages/results/sources
+https://search.brave.com/help/brave-search-crawler
+https://developers.google.com/search/docs/crawling-indexing/sitemaps/image-sitemaps
+
+BANNER PHOTO LOADING IMPROVEMENT
+Each of the 13 pages now has one early image preload for the banner photo actually displayed by its existing CSS. No visible content, colors, layout, photo bytes, form behavior, SEO identity or social destinations were changed. Browsers can discover these images sooner; no measured speed-score, ranking or traffic increase is claimed. A real mobile performance measurement should be made after upload.
+
+
+EXPANDED SERVICE SEO — 14 PUBLIC PAGES
+Upload this complete package, including the new carpet-cleaning.html file, the updated sitemap.xml and all images. The host should serve carpet-cleaning.html at /carpet-cleaning using the same clean-URL behavior as your other pages. Existing carpet quote buttons still select the carpet service. The new carpet page links to related services; the existing commercial, residential and move pages link back. Footer links now include Thumbtack. The new page uses existing styling and your office photo. No live publishing, search submission or form submission was performed. IndexNow still requires the key file to be live before submission.
+
+FINAL PACKAGE CHECK — November 4, 2026
+All 73 bundled image files decoded successfully. All 484 internal page/anchor links passed. All 14 mobile navigation menus, the commercial review toggle, quote-click tracking, 10 service selections, required fields, carpet add-ons and field isolation passed local runtime checks. Google review/Maps, Facebook, Thumbtack, analytics and employee portal URLs responded with HTTP 200; this does not verify signed-in behavior. No quote request was submitted, so live email delivery remains untested. This is a complete 14-page upload. Preserve existing private/admin/portal files on the host.
