@@ -1,0 +1,25 @@
+Lake City Shine website cleanup
+
+Removed obsolete/unreferenced files:
+ Can#U2019t 2.0.html
+ Contact 1234.html
+ Contact 12345.html
+ Hopefully 2.html
+contact(10).html
+contact 123456.html
+New contact form 123.html
+Advanced contact form.html
+contact-FIXED.html
+contact hopefully .html
+post-construction-preview-v12.html
+admin(6).html
+Drop menu  2.zip
+Website3-FAQ-Call-Text.zip
+Website3-FAQ.zip
+
+Kept due to references:
+
+
+HTML pages updated for below-fold image lazy loading: 16
+Existing Soro blog embed preserved.
+All original live assets preserved; no aggressive image deletion.
