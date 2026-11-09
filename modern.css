@@ -223,3 +223,6 @@ img,video,iframe,svg{max-width:100%}
  table{display:block;max-width:100%;overflow-x:auto}
  pre,code{overflow-wrap:anywhere}
 }
+
+/* Hero performance: prevent needless image effects/repaints on mobile without changing layout. */
+@media(max-width:900px){.hero:before{will-change:auto}.hero-inner{contain:none}.hero-card{will-change:auto}}
