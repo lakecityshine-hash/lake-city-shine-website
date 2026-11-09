@@ -226,3 +226,8 @@ img,video,iframe,svg{max-width:100%}
 
 /* Hero performance: prevent needless image effects/repaints on mobile without changing layout. */
 @media(max-width:900px){.hero:before{will-change:auto}.hero-inner{contain:none}.hero-card{will-change:auto}}
+
+/* Preserve the original visual hierarchy when using accessible heading levels. */
+.hero-card h2{font-weight:600;font-size:24px;max-width:320px;line-height:1.3;margin:14px 0 7px}
+.footgrid h3{font-size:inherit;font-weight:700;margin:0 0 12px}
+@media(max-width:900px){.hero-card h2{max-width:none}}
